@@ -1,0 +1,34 @@
+{
+    "app_settings": {
+        "name": "Sematheque",
+        "sparql_endpoint": "http://testyannis.henripoincare.fr/PatriMaths/",
+        "main_namespace_uri": "http://patrimaths.fr/pmo#",
+        "main_namespace_prefix": "pmo",
+        "language": "fr"
+    },
+    "prefixes": {
+        "pmo": "http://patrimaths.fr/pmo#",
+        "PMe": "urn:absolute:PatriMaths_Ontology_encyclopedie",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "dcterms": "http://purl.org/dc/terms/",
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "ahpo": "Http://e-hp.ahp-numerique.fr/ahpo#"
+    },
+    "visualization": {
+        "hidden_properties": [
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "http://omeka.org/s/vocabs/o#item_set"
+        ],
+        "label_properties": [
+            "http://www.w3.org/2000/01/rdf-schema#label",
+            "http://purl.org/dc/elements/1.1/title"
+        ]
+    },
+    "manual_class_mapping": {
+        "Personne": "http://patrimaths.fr/pmo#Personne",
+        "Article": "http://patrimaths.fr/pmo#Article",
+        "Ouvrage": "http://patrimaths.fr/pmo#Ouvrage",
+        "Encyclopédie": "http://patrimaths.fr/pmo#Encyclopedie",
+        "Bibliothèque": "http://patrimaths.fr/pmo#Bibliotheque"
+    }
+}

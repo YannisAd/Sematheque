@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sémathèque - Visualisation des Données</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/standalone/umd/vis-network.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        .config-wizard {
+            background: #ffffff; border-radius: 12px; padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px;
+        }
+        
+        .step-card {
+            background: #fdfdfd; border: 1px solid #e0e0e0; border-radius: 8px;
+            padding: 20px; height: 100%;
+        }
+        
+        .step-header {
+            font-size: 1.1rem; font-weight: 600; color: #0d6efd;
+            margin-bottom: 16px; display: flex; align-items: center; 
+        }
+        
+        .step-number {
+            background: #0d6efd; color: white; border-radius: 50%;
+            width: 28px; height: 28px; display: inline-flex;
+            align-items: center; justify-content: center; font-size: 0.9rem; margin-right: 10px;
+        }
+        
+        .btn-chart-option {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 10px; border: 2px solid #ddd; border-radius: 8px;
+            transition: all 0.2s ease; height: 100%; font-size: 0.85rem; text-align: center;
+        }
+        .btn-chart-option:hover { border-color: #0d6efd; background: #f0f6ff; }
+        .btn-chart-option.active-chart { border-color: #0d6efd; background: #e7f1ff; color: #0d6efd; font-weight: 600; }
+        .btn-chart-option i { font-size: 1.5rem; margin-bottom: 5px; }
+        
+        /* Conteneurs graphiques */
+        .chart-container {
+            position: relative; height: 500px; background: white;
+            border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px;
+        }
+        
+        #network-graph-container {
+            position: relative; height: 700px; background: #ffffff;
+            border-radius: 8px; border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; 
+        }
+
+        #chartPlaceholder, #networkPlaceholder {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; width: 100%; color: #6c757d;
+            position: absolute; top: 0; left: 0; z-index: 5; background: white;
+        }
+        
+        .loading-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.9); z-index: 100;
+        }
+        
+        /* Légende Réseau Flottante */
+        .network-legend-floating {
+            position: absolute; bottom: 20px; left: 20px; z-index: 10;
+            background: rgba(255, 255, 255, 0.95); padding: 12px;
+            border-radius: 8px; border: 1px solid #ddd; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-size: 0.9rem;
+        }
+        .legend-item { display: flex; align-items: center; margin-bottom: 5px; }
+        .legend-dot { width: 14px; height: 14px; border-radius: 50%; margin-right: 8px; border: 1px solid rgba(0,0,0,0.1); }
+        
+        /* Barre de progression Network */
+        .network-progress { width: 60%; max-width: 300px; height: 6px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        
+        <div id="errorContainer"></div>
+
+        <ul class="nav nav-tabs mb-3" id="viewTabs" role="tablist">
+            <li class="nav-item"><button class="nav-link active" id="chart-tab" data-bs-toggle="tab" data-bs-target="#chart-pane"><i class="fas fa-chart-bar me-2"></i>Graphique</button></li>
+            <li class="nav-item"><button class="nav-link" id="network-tab" data-bs-toggle="tab" data-bs-target="#network-pane"><i class="fas fa-project-diagram me-2"></i>Réseau</button></li>
+            <li class="nav-item"><button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats-pane"><i class="fas fa-calculator me-2"></i>Statistiques</button></li>
+        </ul>
+        
+        <div class="tab-content" id="viewTabsContent">
+            
+            <div class="tab-pane fade show active" id="chart-pane">
+                <div class="config-wizard">
+                    <div class="row g-4">
+                        <div class="col-lg-5">
+                            <div class="step-card">
+                                <h6 class="step-header"><span class="step-number">1</span> Données</h6>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">Axe X (Catégorie)</label>
+                                    <select id="columnX" class="form-select form-select-sm"><option value="">Sélectionner...</option></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">Segmentation (Optionnel)</label>
+                                    <select id="groupByColumn" class="form-select form-select-sm"><option value="">Aucune</option></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">Mesure (Axe Y)</label>
+                                    <select id="mesureType" class="form-select form-select-sm">
+                                        <option value="count">Compter les occurrences</option>
+                                        <option value="sum">Somme</option>
+                                        <option value="avg">Moyenne</option>
+                                    </select>
+                                </div>
+                                <div id="mesureColumnSection" style="display:none;">
+                                    <label class="form-label small">Propriété à calculer</label>
+                                    <select id="mesureColumn" class="form-select form-select-sm"><option value="">Sélectionner...</option></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-7">
+                            <div class="step-card">
+                                <h6 class="step-header"><span class="step-number">2</span> Apparence</h6>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-3"><button class="btn btn-chart-option w-100 active-chart" data-chart="bar"><i class="fas fa-chart-bar"></i>Barres</button></div>
+                                            <div class="col-3"><button class="btn btn-chart-option w-100" data-chart="line"><i class="fas fa-chart-line"></i>Ligne</button></div>
+                                            <div class="col-3"><button class="btn btn-chart-option w-100" data-chart="pie"><i class="fas fa-chart-pie"></i>Pie</button></div>
+                                            <div class="col-3"><button class="btn btn-chart-option w-100" data-chart="doughnut"><i class="fas fa-circle-notch"></i>Donut</button></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-bold">Tri</label>
+                                        <select id="sortOrder" class="form-select form-select-sm mb-2">
+                                            <option value="value-desc">Valeur (Desc)</option>
+                                            <option value="value-asc">Valeur (Asc)</option>
+                                            <option value="label-asc">A-Z</option>
+                                        </select>
+                                        <div class="d-grid"><button id="generateChart" class="btn btn-success btn-sm mt-2">Générer</button></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="mainChart"></canvas>
+                    <div id="chartPlaceholder"><i class="fas fa-chart-area"></i><p>Configurez le graphique ci-dessus</p></div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="network-pane">
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body p-3 bg-white rounded">
+                        <div class="row align-items-end g-3">
+                            <div class="col-md-5">
+                                <label class="form-label fw-bold text-primary small">Nœud Source (Propriété 1)</label>
+                                <select id="nodeSource" class="form-select form-select-sm"><option value="">Choisir...</option></select>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label fw-bold text-warning small">Nœud Cible (Propriété 2)</label>
+                                <select id="nodeTarget" class="form-select form-select-sm"><option value="">Choisir...</option></select>
+                            </div>
+                            <div class="col-md-2">
+                                <button id="generateNetworkButton" class="btn btn-primary btn-sm w-100"><i class="fas fa-sync-alt me-1"></i> Générer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="network-graph-container">
+                    <div class="network-legend-floating">
+                        <div class="legend-item"><span class="legend-dot" style="background:#97C2FC;"></span> Source</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#FFD86E;"></span> Cible</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#D2E5FF; border-color:#666;"></span> Intersection</div>
+                    </div>
+                    
+                    <div id="networkLoading" class="loading-overlay" style="display: none;">
+                        <div class="spinner-border text-primary mb-3" role="status"></div>
+                        <h5 class="text-dark">Organisation du réseau...</h5>
+                        <div class="text-muted small" id="networkStatusText">Calcul de la physique en cours</div>
+                        <div class="progress network-progress">
+                            <div id="networkProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div id="networkPlaceholder">
+                        <i class="fas fa-project-diagram opacity-25"></i>
+                        <h5 class="mt-3 text-muted">Sélectionnez une source et une cible</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="stats-pane">
+                <div class="row g-4 mt-2">
+                    <div class="col-lg-5">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-header bg-white fw-bold">Vue d'ensemble</div>
+                            <div class="card-body" id="generalStats"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                         <div class="card h-100 shadow-sm border-0">
+                            <div class="card-header bg-white fw-bold">Détails par propriété</div>
+                            <div class="card-body">
+                                <select id="statsPropertySelector" class="form-select form-select-sm mb-3"><option value="">Choisir une propriété...</option></select>
+                                <div id="detailedPropertyStats" style="max-height: 400px; overflow-y: auto;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let processedData = [], currentChart = null, currentNetwork = null, availableColumns = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            setupEventListeners();
+        });
+
+        function initializeData() {
+            try {
+                const initialData = {% if initial_data %}{{ initial_data|safe }}{% else %}[]{% endif %};
+                if (Array.isArray(initialData) && initialData.length > 0) {
+                    processAllData(initialData);
+                    generateStats();
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function processAllData(data) {
+            processedData = data.map(item => {
+                const newItem = {};
+                Object.keys(item).forEach(key => {
+                    if (!['URI', 'SubjectURI', 'Properties', 'ValueLabels'].includes(key)) {
+                        // Nettoyage des clés (suppression namespace)
+                        const cleanKey = key.split(/[/#]/).pop().replace(/_/g, ' ');
+                        newItem[cleanKey] = item[key];
+                    }
+                });
+                newItem['URI'] = item.SubjectURI || item.URI;
+                return newItem;
+            });
+
+            const cols = new Set();
+            processedData.forEach(d => Object.keys(d).forEach(k => cols.add(k)));
+            availableColumns = Array.from(cols).sort().filter(c => c !== 'URI');
+            
+            populateSelects();
+        }
+
+        function populateSelects() {
+            const selects = ['columnX', 'groupByColumn', 'mesureColumn', 'nodeSource', 'nodeTarget', 'statsPropertySelector'];
+            selects.forEach(id => {
+                const el = document.getElementById(id);
+                if(!el) return;
+                const savedVal = el.value;
+                el.innerHTML = '<option value="">Sélectionner...</option>';
+                availableColumns.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c; opt.text = c;
+                    el.appendChild(opt);
+                });
+                el.value = savedVal;
+            });
+        }
+
+        function setupEventListeners() {
+            // Graphique
+            document.querySelectorAll('.btn-chart-option').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.btn-chart-option').forEach(b => b.classList.remove('active-chart'));
+                    this.classList.add('active-chart');
+                });
+            });
+            document.getElementById('generateChart').addEventListener('click', generateChart);
+            document.getElementById('mesureType').addEventListener('change', function() {
+                document.getElementById('mesureColumnSection').style.display = ['sum', 'avg'].includes(this.value) ? 'block' : 'none';
+            });
+
+            // Réseau
+            document.getElementById('generateNetworkButton').addEventListener('click', generateNetwork);
+
+            // Stats
+            document.getElementById('statsPropertySelector').addEventListener('change', function() {
+                if(this.value) generateDetailedStats(this.value);
+            });
+        }
+
+        // --- GRAPHIQUES (Chart.js) ---
+        function generateChart() {
+            const colX = document.getElementById('columnX').value;
+            if(!colX) return alert("Veuillez choisir une propriété Axe X");
+            
+            document.getElementById('chartPlaceholder').style.display = 'none';
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            
+            // Logique de groupement simplifiée pour l'exemple
+            const counts = {};
+            processedData.forEach(d => {
+                const val = d[colX] || "(Vide)";
+                // Gestion des valeurs multiples séparées par |
+                const parts = String(val).split(' | ');
+                parts.forEach(p => {
+                    const label = p.trim();
+                    counts[label] = (counts[label] || 0) + 1;
+                });
+            });
+
+            // Tri
+            const sortedLabels = Object.keys(counts).sort((a,b) => counts[b] - counts[a]).slice(0, 50); // Top 50
+            const data = sortedLabels.map(l => counts[l]);
+
+            if(currentChart) currentChart.destroy();
+            
+            const type = document.querySelector('.btn-chart-option.active-chart').dataset.chart;
+            currentChart = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: sortedLabels,
+                    datasets: [{
+                        label: 'Occurrences',
+                        data: data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        // --- RÉSEAU (Vis.js) ---
+        function generateNetwork() {
+            const srcProp = document.getElementById('nodeSource').value;
+            const tgtProp = document.getElementById('nodeTarget').value;
+            
+            if(!srcProp || !tgtProp || srcProp === tgtProp) return alert("Choisir deux propriétés différentes.");
+
+            // UI Reset
+            const container = document.getElementById('network-graph-container');
+            const overlay = document.getElementById('networkLoading');
+            const placeholder = document.getElementById('networkPlaceholder');
+            const progressBar = document.getElementById('networkProgressBar');
+            const statusText = document.getElementById('networkStatusText');
+            
+            // 1. Nettoyage complet
+            if(currentNetwork) {
+                currentNetwork.destroy();
+                currentNetwork = null;
+            }
+            
+            placeholder.style.display = 'none';
+            overlay.style.display = 'flex';
+            progressBar.style.width = '10%';
+
+            // 2. Calcul asynchrone pour ne pas bloquer l'UI
+            setTimeout(() => {
+                try {
+                    const nodesMap = new Map();
+                    const edgesMap = new Map();
+
+                    processedData.forEach(item => {
+                        // Gestion des valeurs multiples
+                        const sources = String(item[srcProp] || "").split('|').map(s => s.trim()).filter(s => s);
+                        const targets = String(item[tgtProp] || "").split('|').map(t => t.trim()).filter(t => t);
+
+                        sources.forEach(s => {
+                            if(!nodesMap.has(s)) nodesMap.set(s, {id: s, label: s, group: 'source', value: 1});
+                            else nodesMap.get(s).value++; // Grossir si fréquent
+
+                            targets.forEach(t => {
+                                if(s === t) return; // Pas de self-loop
+                                
+                                if(!nodesMap.has(t)) nodesMap.set(t, {id: t, label: t, group: 'target', value: 1});
+                                else {
+                                    nodesMap.get(t).value++;
+                                    if(nodesMap.get(t).group === 'source') nodesMap.get(t).group = 'intersection';
+                                }
+
+                                const edgeId = s < t ? `${s}|${t}` : `${t}|${s}`; // ID unique non-orienté pour grouper
+                                if(!edgesMap.has(edgeId)) edgesMap.set(edgeId, {from: s, to: t, value: 1});
+                                else edgesMap.get(edgeId).value++;
+                            });
+                        });
+                    });
+
+                    const nodes = Array.from(nodesMap.values()).map(n => ({
+                        id: n.id,
+                        // Label complet mais tronqué pour l'affichage si trop long
+                        label: n.label.length > 20 ? n.label.substring(0, 18) + '..' : n.label,
+                        title: n.label, // Tooltip complet
+                        group: n.group,
+                        value: n.value // Taille relative
+                    }));
+                    
+                    const edges = Array.from(edgesMap.values());
+
+                    if(nodes.length === 0) throw new Error("Aucune relation trouvée.");
+                    if(nodes.length > 1000) alert("Attention: Le réseau est très grand (" + nodes.length + " nœuds). L'affichage peut être lent.");
+
+                    progressBar.style.width = '50%';
+                    statusText.innerText = "Organisation spatiale...";
+
+                    // 3. Configuration Vis.js
+                    const data = { nodes: nodes, edges: edges };
+                    const options = {
+                        nodes: {
+                            shape: 'dot',
+                            scaling: { min: 10, max: 30, label: { enabled: true, min: 8, max: 20 } },
+                            font: { 
+                                size: 14, 
+                                face: 'Segoe UI', 
+                                background: 'rgba(255,255,255,0.8)', // Fond blanc pour lisibilité
+                                strokeWidth: 0 
+                            }
+                        },
+                        groups: {
+                            source: { color: { background: '#97C2FC', border: '#2B7CE9' } },
+                            target: { color: { background: '#FFD86E', border: '#FFA500' } },
+                            intersection: { color: { background: '#D2E5FF', border: '#6c757d' } }
+                        },
+                        edges: {
+                            color: { inherit: 'both', opacity: 0.5 },
+                            smooth: { type: 'continuous' }
+                        },
+                        physics: {
+                            stabilization: {
+                                enabled: true,
+                                iterations: 1000, // Pré-calculer avant d'afficher
+                                updateInterval: 50,
+                                onlyDynamicEdges: false,
+                                fit: true
+                            },
+                            forceAtlas2Based: {
+                                gravitationalConstant: -100, // Moins fort pour Atlas
+                                centralGravity: 0.005,
+                                springLength: 200,
+                                springConstant: 0.05,
+                                avoidOverlap: 0.5 // Evite le chevauchement
+                            },
+                            solver: 'forceAtlas2Based', 
+                            adaptiveTimestep: true
+                        },
+                        interaction: { tooltipDelay: 200, hover: true }
+                    };
+
+                    currentNetwork = new vis.Network(container, data, options);
+
+                    // Gestion de la barre de progression via les événements de stabilisation
+                    currentNetwork.on("stabilizationProgress", function(params) {
+                        const width = 50 + (params.iterations / params.total * 50);
+                        progressBar.style.width = width + '%';
+                    });
+
+                    currentNetwork.on("stabilizationIterationsDone", function() {
+                        overlay.style.display = 'none';
+                        // Figer la physique après stabilisation pour économiser les ressources
+                        currentNetwork.setOptions({ physics: { enabled: false } });
+                    });
+
+                } catch(err) {
+                    overlay.style.display = 'none';
+                    alert("Erreur : " + err.message);
+                    placeholder.style.display = 'flex';
+                }
+            }, 100);
+        }
+
+        // --- STATISTIQUES ---
+        function generateStats() {
+            document.getElementById('generalStats').innerHTML = `
+                <p><strong>Nombre d'entrées :</strong> ${processedData.length}</p>
+                <p><strong>Nombre de propriétés :</strong> ${availableColumns.length}</p>
+            `;
+        }
+        
+        function generateDetailedStats(prop) {
+            const counts = {};
+            processedData.forEach(d => {
+                const val = d[prop];
+                if(val) counts[val] = (counts[val]||0)+1;
+            });
+            const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0, 20);
+            let html = '<ul class="list-group">';
+            sorted.forEach(([k,v]) => html += `<li class="list-group-item d-flex justify-content-between align-items-center">${k} <span class="badge bg-primary rounded-pill">${v}</span></li>`);
+            html += '</ul>';
+            document.getElementById('detailedPropertyStats').innerHTML = html;
+        }
+    </script>
+</body>
+</html>

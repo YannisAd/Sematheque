@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block title %}Recherche - Sematheque{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="display-5 fw-bold text-primary mb-3">
+                    <i class="fas fa-search me-2"></i>Recherche
+                </h1>
+                <p class="lead text-muted">Recherchez dans l'ensemble de la base de données PatriMaths</p>
+            </div>
+
+            <div class="card shadow-lg border-0 rounded-3 mb-5">
+                <div class="card-body p-5">
+                    <form method="post" action="{{ url_for('search') }}">
+                        <div class="mb-4">
+                            <label for="query_text" class="form-label fw-bold text-uppercase small text-muted ls-1">Termes de recherche</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                                <input type="text" class="form-control border-start-0 ps-0" id="query_text" name="query_text" placeholder="Ex: Euler, Intégration, 1789..." required autofocus>
+                                <button type="submit" class="btn btn-primary px-4 fw-bold">
+                                    Rechercher
+                                </button>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted"><i class="fas fa-info-circle me-1"></i> La recherche s'effectue sur les titres et labels.</small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-12">
+                    <h5 class="fw-bold text-secondary mb-3 small text-uppercase ls-1">Conseils de recherche</h5>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-start p-3 bg-white rounded shadow-sm h-100 border">
+                        <div class="flex-shrink-0 text-primary me-3"><i class="fas fa-user fa-lg"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Par Nom</h6>
+                            <p class="small text-muted mb-0">Tapez le nom d'une personne pour trouver sa fiche et ses œuvres associées.</p>
+                            <div class="mt-2"><span class="badge bg-light text-dark border">Euler</span> <span class="badge bg-light text-dark border">Poincaré</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-start p-3 bg-white rounded shadow-sm h-100 border">
+                        <div class="flex-shrink-0 text-success me-3"><i class="fas fa-book fa-lg"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Par Thème ou Titre</h6>
+                            <p class="small text-muted mb-0">Cherchez des ouvrages ou articles par mots-clés de leur titre.</p>
+                            <div class="mt-2"><span class="badge bg-light text-dark border">Géométrie</span> <span class="badge bg-light text-dark border">Calcul</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-start p-3 bg-white rounded shadow-sm h-100 border">
+                        <div class="flex-shrink-0 text-warning me-3"><i class="fas fa-calendar-alt fa-lg"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Par Date</h6>
+                            <p class="small text-muted mb-0">Trouvez des ressources liées à une année ou un siècle spécifique.</p>
+                            <div class="mt-2"><span class="badge bg-light text-dark border">1789</span> <span class="badge bg-light text-dark border">19e siècle</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="d-flex align-items-start p-3 bg-white rounded shadow-sm h-100 border">
+                        <div class="flex-shrink-0 text-info me-3"><i class="fas fa-tags fa-lg"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Mots combinés</h6>
+                            <p class="small text-muted mb-0">Associez plusieurs termes pour affiner les résultats.</p>
+                            <div class="mt-2"><span class="badge bg-light text-dark border">Gauss Arithmétique</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

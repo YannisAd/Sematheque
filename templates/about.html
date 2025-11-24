@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+
+{% block title %}À propos - Sematheque{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="fas fa-info-circle text-primary me-2"></i>
+        À propos de Sematheque
+    </h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Présentation</h2>
+                    <p>
+                        Sematheque est une application dédiée à l'exploration et la découverte des ressources 
+                        de la base de données PatriMaths de manière intuitive et ergonomique.
+                    </p>
+                    <p>
+                        Notre outil permet de naviguer à travers la richesse du patrimoine mathématique et 
+                        de découvrir les connexions entre les mathématiciens, les articles, les encyclopédies 
+                        et les ouvrages référencés dans la base de données.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Fonctionnalités</h2>
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                        <div class="col">
+                            <div class="feature-item">
+                                <i class="fas fa-compass text-primary fa-2x mb-2"></i>
+                                <h3 class="h5">Navigation intuitive</h3>
+                                <p>Explorez facilement les connexions entre ressources et naviguez dans le réseau de connaissances.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col">
+                            <div class="feature-item">
+                                <i class="fas fa-filter text-primary fa-2x mb-2"></i>
+                                <h3 class="h5">Filtrage avancé</h3>
+                                <p>Affinez vos recherches avec des filtres puissants et des opérateurs de recherche flexibles.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col">
+                            <div class="feature-item">
+                                <i class="fas fa-history text-primary fa-2x mb-2"></i>
+                                <h3 class="h5">Suivi d'historique</h3>
+                                <p>Gardez une trace de votre parcours d'exploration et revenez facilement aux ressources consultées.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col">
+                            <div class="feature-item">
+                                <i class="fas fa-file-export text-primary fa-2x mb-2"></i>
+                                <h3 class="h5">Export de données</h3>
+                                <p>Exportez vos résultats dans différents formats (CSV, Excel, JSON) pour une analyse approfondie.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Guide d'utilisation</h2>
+                    <ol class="list-group list-group-numbered mb-4">
+                        <li class="list-group-item">Commencez par sélectionner une ressource initiale</li>
+                        <li class="list-group-item">Explorez ses propriétés et ses connexions</li>
+                        <li class="list-group-item">Utilisez les filtres dans la barre latérale pour affiner votre recherche</li>
+                        <li class="list-group-item">Parcourez les résultats et naviguez entre les ressources connexes</li>
+                        <li class="list-group-item">Exportez vos résultats dans le format de votre choix</li>
+                    </ol>
+                    
+                    <p>
+                        Pour une recherche rapide, utilisez la fonction de recherche accessible depuis le menu principal.
+                        Vous pouvez également utiliser directement l'interface SPARQL pour des requêtes plus avancées.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Contact</h2>
+                    <p>
+                        Pour plus d'informations sur le projet PatriMaths, visitez 
+                        <a href="http://patrimaths.fr" target="_blank">le site officiel</a>.
+                    </p>
+                    <p>
+                        Si vous avez des questions, des suggestions ou si vous rencontrez des problèmes 
+                        avec l'application, n'hésitez pas à nous contacter.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h2 class="h5 mb-0">Informations techniques</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Endpoint SPARQL</div>
+                                http://testyannis.henripoincare.fr/PM_Encyclopedie/
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Préfixe personnalisé</div>
+                                pmo: &lt;http://patrimaths.fr/pmo#&gt;
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Technologie</div>
+                                Flask, Bootstrap 5, SPARQL
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

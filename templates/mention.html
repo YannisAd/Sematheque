@@ -1,0 +1,244 @@
+{% extends "layout.html" %}
+
+{% block title %}Mentions Légales - Sematheque{% endblock %}
+
+{% block head %}
+<style>
+    /** Style unifié avec la page Structure (Charte Graphique). */
+    
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --card-hover-transform: translateY(-5px);
+        --transition-speed: 0.3s;
+    }
+
+    /* En-tête Moderne */
+    .hero-modern {
+        color: black;
+        padding: 4rem 0 6rem;
+        margin-bottom: -3rem; /* Chevauchement avec les cartes */
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    }
+
+    /* Cartes de contenu */
+    .legal-card {
+        background: white;
+        border: none;
+        border-radius: 16px;
+        padding: 2.5rem;
+        height: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: all var(--transition-speed) ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .legal-card:hover {
+        transform: var(--card-hover-transform);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    /* Icônes thématiques */
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    /* Thèmes couleurs */
+    .theme-blue { background: rgba(13, 110, 253, 0.1); color: #0d6efd; }
+    .theme-green { background: rgba(25, 135, 84, 0.1); color: #198754; }
+    .theme-orange { background: rgba(253, 126, 20, 0.1); color: #fd7e14; }
+    .theme-purple { background: rgba(111, 66, 193, 0.1); color: #6f42c1; }
+    .theme-red { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+
+    /* Typographie et éléments */
+    h2 { font-weight: 700; font-size: 1.4rem; margin-bottom: 1rem; color: #2c3e50; }
+    h3 { font-size: 1rem; font-weight: 600; color: #495057; margin-top: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .legal-text { color: #6c757d; line-height: 1.6; font-size: 0.95rem; }
+    .legal-text strong { color: #343a40; font-weight: 600; }
+    
+    .info-list { list-style: none; padding: 0; margin: 0; }
+    .info-list li { margin-bottom: 0.75rem; display: flex; align-items: flex-start; }
+    .info-list i { margin-right: 12px; margin-top: 4px; min-width: 20px; text-align: center; }
+
+    /* Badges */
+    .badge-soft {
+        background-color: #eef2ff; color: #4f46e5;
+        padding: 0.4rem 0.8rem; border-radius: 50px;
+        font-weight: 600; font-size: 0.75rem;
+        border: 1px solid #e0e7ff; text-transform: uppercase;
+    }
+
+    /* Section Contact simplifiée */
+    .contact-box {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s;
+    }
+    .contact-box:hover { background: #fff; border-color: #0d6efd; }
+
+    @media (max-width: 768px) {
+        .hero-modern { padding: 3rem 0 5rem; }
+        .legal-card { padding: 1.5rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="hero-modern">
+    <div class="container text-center">
+        <span class="badge bg-white text-primary bg-opacity-25 backdrop-blur mb-3 px-3 py-2 rounded-pill">
+            <i class="fas fa-balance-scale me-2"></i>Juridique
+        </span>
+        <h1 class="display-4 fw-bold mb-3">Mentions Légales</h1>
+        <p class="lead opacity-75 mb-0">Confidentialité et conditions d'utilisation</p>
+    </div>
+</section>
+
+<div class="container pb-5">
+    
+    <div class="row g-4 mb-4" style="margin-top: -3rem;">
+        <div class="col-lg-6">
+            <div class="legal-card">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="icon-box theme-blue"><i class="fas fa-university"></i></div>
+                    <span class="badge-soft">Éditeur</span>
+                </div>
+                <h2>Éditeur du Service</h2>
+                <div class="legal-text">
+                    <p class="mb-3">Le site <strong>Sematheque</strong> est édité dans le cadre du projet de recherche PatriMaths.</p>
+                    <ul class="info-list">
+                        <li><i class="fas fa-building text-primary"></i> <span><strong>Organisation :</strong> Archives Henri-Poincaré (AHP-PReST)</span></li>
+                        <li><i class="fas fa-map-marker-alt text-primary"></i> <span><strong>Adresse :</strong> BP 454, 91 av. de la Libération, 54001 NANCY</span></li>
+                        <li><i class="fas fa-flask text-primary"></i> <span><strong>Statut :</strong> Unité Mixte de Recherche (UMR 7117 CNRS)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="legal-card">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="icon-box theme-green"><i class="fas fa-server"></i></div>
+                    <span class="badge-soft">Technique</span>
+                </div>
+                <h2>Hébergement</h2>
+                <div class="legal-text">
+                    <p class="mb-3">L'hébergement est assuré sur les infrastructures universitaires françaises.</p>
+                    <ul class="info-list">
+                        <li><i class="fas fa-network-wired text-success"></i> <span><strong>Hébergeur :</strong> Université de Lorraine - Direction du Numérique</span></li>
+                        <li><i class="fas fa-globe-europe text-success"></i> <span><strong>Localisation :</strong> France (Union Européenne)</span></li>
+                        <li><i class="fas fa-shield-alt text-success"></i> <span><strong>Sécurité :</strong> Protocole HTTPS / TLS</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="legal-card">
+                <div class="row align-items-center mb-4">
+                    <div class="col-auto">
+                        <div class="icon-box theme-orange mb-0"><i class="fas fa-user-shield"></i></div>
+                    </div>
+                    <div class="col">
+                        <h2 class="mb-0">Protection des Données & RGPD</h2>
+                        <p class="text-muted mb-0 small">Conformité au Règlement Général sur la Protection des Données</p>
+                    </div>
+                </div>
+                
+                <div class="row g-5">
+                    <div class="col-md-6 legal-text border-end-md">
+                        <h3><i class="fas fa-info-circle text-warning me-2"></i>Nature des données</h3>
+                        <p>Sematheque est une application de <strong>consultation uniquement</strong>. Nous minimisons strictement la collecte de données.</p>
+                        <ul class="info-list mt-3">
+                            <li><i class="fas fa-check-circle text-success"></i> Aucune création de compte nécessaire.</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Aucune donnée nominative collectée.</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Pas de traceurs publicitaires.</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 legal-text">
+                        <h3><i class="fas fa-cookie-bite text-warning me-2"></i>Cookies & Logs</h3>
+                        <ul class="info-list mt-3">
+                            <li><i class="fas fa-server text-muted"></i> <span><strong>Logs serveur :</strong> IP anonymisée (sécurité, 30 jours max).</span></li>
+                            <li><i class="fas fa-cookie text-muted"></i> <span><strong>Cookies :</strong> Techniques uniquement (session, préférences).</span></li>
+                            <li><i class="fas fa-gavel text-muted"></i> <span><strong>Droits :</strong> Droit d'accès et d'effacement auprès du DPO.</span></li>
+                        </ul>
+                        <div class="mt-4">
+                            <a href="mailto:yannis.addi@univ-lorraine.fr" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                <i class="fas fa-paper-plane me-1"></i> Contacter le DPO
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="legal-card">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="icon-box theme-purple mb-0 me-3"><i class="fas fa-copyright"></i></div>
+                    <h2 class="mb-0">Propriété Intellectuelle</h2>
+                </div>
+                
+                <div class="legal-text">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3 h-100">
+                                <h6 class="fw-bold text-dark mb-2"><i class="fab fa-github me-2"></i>Code Source</h6>
+                                <p class="small mb-2">Le code de l'application est distribué sous licence libre <strong>MIT License</strong>.</p>
+                                <a href="https://github.com/YannisAd/sematheque" target="_blank" class="text-decoration-none small fw-bold text-primary">
+                                    Voir le dépôt GitHub <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3 h-100">
+                                <h6 class="fw-bold text-dark mb-2"><i class="fab fa-creative-commons me-2"></i>Données</h6>
+                                <p class="small mb-0">Les données sémantiques sont diffusées sous licence <strong>CC BY-SA 4.0</strong> (Attribution - Partage dans les mêmes conditions).</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-light mt-4 mb-0 border d-flex align-items-center">
+                        <i class="fas fa-quote-left text-muted fs-4 me-3"></i>
+                        <small class="text-muted">Citation recommandée : "Patrimaths. (2025). Sematheque - Explorateur Sémantique. Archives Henri-Poincaré."</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="legal-card text-center d-flex flex-column justify-content-center">
+                <div class="icon-box theme-red mx-auto"><i class="fas fa-envelope-open-text"></i></div>
+                <h2>Contact</h2>
+                <p class="legal-text text-muted mb-4">Une question juridique ou technique ?</p>
+                
+                <a href="mailto:yannis.addi@univ-lorraine.fr" class="contact-box d-block text-decoration-none mb-3">
+                    <i class="fas fa-paper-plane text-danger mb-2 fs-4"></i>
+                    <div class="fw-bold text-dark">Envoyer un email</div>
+                    <small class="text-muted">yannis.addi@univ-lorraine.fr</small>
+                </a>
+                
+                <p class="mt-auto mb-0 text-muted small opacity-75">Mise à jour : Juin 2025</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

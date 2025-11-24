@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+
+{% block title %}Sélection de ressource - {{ project_info.name }}{% endblock %}
+
+{% block head %}
+<style>
+    .resource-select-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+    .resource-select-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        border-color: var(--bs-primary);
+    }
+    .resource-select-card.active {
+        border-color: var(--bs-primary);
+        background-color: rgba(var(--bs-primary-rgb), 0.05);
+    }
+    .icon-circle {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+        color: var(--bs-primary);
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+        transition: all 0.3s;
+    }
+    .resource-select-card:hover .icon-circle,
+    .resource-select-card.active .icon-circle {
+        background-color: var(--bs-primary);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-primary mb-3">Explorer {{ project_info.name }}</h1>
+        <p class="lead text-muted">Sélectionnez un type de ressource pour commencer la navigation</p>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-body p-5">
+                    
+                    <form method="post" action="{{ url_for('select_resource') }}" id="resourceForm">
+                        
+                        <div class="mb-5">
+                            <h5 class="mb-4 fw-bold text-secondary text-uppercase small ls-1">
+                                <i class="fas fa-layer-group me-2"></i>Types disponibles
+                            </h5>
+                            
+                            {% if available_types %}
+                            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+                                {% for type_obj in available_types %}
+                                <div class="col">
+                                    <div class="card resource-select-card h-100 {% if resource_type == type_obj.label %}active{% endif %}" 
+                                         onclick="selectType('{{ type_obj.label }}')">
+                                        <div class="card-body text-center py-4">
+                                            <input type="radio" class="btn-check" name="resource_type" 
+                                                   id="type-{{ loop.index }}" value="{{ type_obj.label }}" 
+                                                   {% if resource_type == type_obj.label %}checked{% endif %}>
+                                            
+                                            <div class="icon-circle">
+                                                <i class="fas fa-cube"></i>
+                                            </div>
+                                            
+                                            <h6 class="card-title fw-bold mb-0">{{ type_obj.label }}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Aucun type de ressource détecté. Vérifiez la configuration du Endpoint SPARQL.
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="mb-3 fw-bold text-secondary text-uppercase small ls-1">
+                                <i class="fas fa-search me-2"></i>Rechercher dans "{{ resource_type }}"
+                            </h5>
+                            
+                            <div class="input-group input-group-lg">
+                                <select class="form-select select2-search" id="resource_search" name="resource_search">
+                                    <option value="">Commencez à taper un nom...</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                            <div class="form-text mt-2">
+                                {{ resource_labels|length }} ressources disponibles pour ce type.
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    // Récupération sécurisée des données Python
+    var resourceLabels = [];
+    try {
+        resourceLabels = {{ resource_labels|safe }};
+    } catch (e) {
+        console.error("Erreur parsing JSON:", e);
+    }
+
+    function selectType(typeVal) {
+        // Mise à jour visuelle
+        $('.resource-select-card').removeClass('active');
+        // Coche le radio button correspondant
+        $('input[name="resource_type"][value="' + typeVal + '"]').prop('checked', true);
+        // Soumet le formulaire en GET pour recharger la liste
+        var form = $('#resourceForm');
+        form.attr('method', 'get');
+        form.submit();
+    }
+
+    $(document).ready(function() {
+        // Initialisation Select2
+        $('.select2-search').select2({
+            theme: 'bootstrap-5',
+            placeholder: 'Rechercher une ressource...',
+            allowClear: true,
+            data: resourceLabels.map(function(item) {
+                return { id: item, text: item };
+            })
+        });
+
+        // Gestion du changement via Select2 (si on sélectionne, on soumet en POST)
+        $('.select2-search').on('select2:select', function (e) {
+             $('#resourceForm').attr('method', 'post').submit();
+        });
+    });
+</script>
+{% endblock %}

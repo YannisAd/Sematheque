@@ -1,0 +1,287 @@
+{% extends "layout.html" %}
+
+{% block title %}Résultats - Sematheque{% endblock %}
+
+{% block head %}
+<style>
+    /** Styles de la grille de résultats. */
+    .result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+    
+    .result-card { 
+        background: white; border: 1px solid #f1f5f9; border-radius: 12px; padding: 1.5rem; 
+        transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; height: 100%; 
+        min-height: 240px; display: flex; flex-direction: column; position: relative; 
+        text-decoration: none; color: inherit; 
+    }
+    .result-card:hover { transform: translateY(-4px); box-shadow: 0 12px 35px rgba(0,0,0,0.08); border-color: #0d6efd; }
+    
+    .result-card .card-icon { 
+        width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; 
+        background: #f8f9fa; border-radius: 10px; color: #0d6efd; margin-bottom: 1rem; font-size: 1.2rem; 
+    }
+    .result-card .card-title { 
+        display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; 
+        overflow: hidden; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; min-height: 3em; 
+    }
+    .result-card .card-uri {
+        font-family: monospace; font-size: 0.75rem; color: #6c757d;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    
+    /** Styles du panneau latéral (Offcanvas). */
+    .offcanvas-end { width: 800px; border: none; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+    @media (max-width: 992px) { .offcanvas-end { width: 90%; } }
+    
+    .detail-row { padding: 0.75rem 1rem; border-bottom: 1px solid #f1f5f9; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #6c757d; width: 30%; padding-right: 1rem; }
+    .detail-values { width: 70%; }
+    .detail-value-item { margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+    .btn-action-xs { opacity: 0.6; padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; margin-left: 6px; }
+    .detail-value-item:hover .btn-action-xs { opacity: 1; background-color: #e9ecef; color: #0d6efd; }
+    
+    .pagination .page-link { border: none; color: #495057; margin: 0 2px; border-radius: 4px; }
+    .pagination .page-item.active .page-link { background-color: #0d6efd; color: white; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 text-primary fw-bold"><i class="fas fa-search me-2"></i>Résultats</h1>
+        <div class="d-flex gap-2">
+            <button id="visualizeResultsBtn" class="btn btn-outline-primary btn-sm fw-bold shadow-sm" {% if not results %}disabled{% endif %}>
+                <i class="fas fa-chart-pie me-1"></i> Visualiser
+            </button>
+            <a href="{{ url_for('search') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-undo me-1"></i> Nouvelle recherche
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4 bg-light">
+        <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+                Recherche : <strong class="text-dark">"{{ query_text }}"</strong> 
+                <span class="badge bg-primary rounded-pill ms-2">{{ total_results|default(results|length) }} résultats</span>
+            </div>
+            <form action="{{ url_for('filter_results') }}" method="get" class="d-flex align-items-center gap-2" style="min-width: 250px;">
+                <input type="hidden" name="query_text" value="{{ query_text }}">
+                <label class="small text-muted fw-bold text-nowrap">Filtrer par type :</label>
+                <select name="filter_type" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">Tous les types</option>
+                    {% if all_types %}
+                        {% for t in all_types %}
+                            <option value="{{ t }}" {% if filter_type == t %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </form>
+        </div>
+    </div>
+
+    {% if results %}
+    <div class="result-grid mb-5">
+        {% for result in results %}
+            {% set icon = 'fa-cube' %}
+            {% set r_type = result.type|default('') %}
+            {% set r_uri = result.subject|default(result.uri)|default('') %}
+            
+            {% if 'Person' in r_type or 'Person' in r_uri %} {% set icon = 'fa-user' %} {% endif %}
+            {% if 'Book' in r_type or 'Ouvrage' in r_uri %} {% set icon = 'fa-book' %} {% endif %}
+            {% if 'Article' in r_type %} {% set icon = 'fa-file-alt' %} {% endif %}
+            {% if 'Bibliotheque' in r_type %} {% set icon = 'fa-building' %} {% endif %}
+
+            <div class="result-card shadow-sm" 
+                 data-bs-toggle="offcanvas" 
+                 data-bs-target="#resourceOffcanvas" 
+                 data-uri="{{ r_uri }}" 
+                 data-title="{{ result.label }}">
+                
+                <div class="d-flex align-items-start flex-grow-1">
+                    <div class="card-icon"><i class="fas {{ icon }}"></i></div>
+                    <div class="overflow-hidden w-100">
+                        <h6 class="card-title" title="{{ result.label }}">{{ result.label }}</h6>
+                        {% if result.type %}
+                            <span class="badge bg-light text-secondary border mb-2">{{ result.type }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-auto pt-3 border-top">
+                    <small class="card-uri mb-2">{{ r_uri }}</small>
+                    <div class="text-end">
+                        <span class="small text-primary fw-bold">
+                            Voir détails <i class="fas fa-chevron-right ms-1"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-search-minus fa-4x text-muted opacity-25 mb-3"></i>
+        <h4 class="text-muted">Aucun résultat trouvé.</h4>
+        <p class="text-muted">Essayez d'autres termes ou retirez les filtres de type.</p>
+    </div>
+    {% endif %}
+    
+    {% if total_pages is defined and total_pages > 1 %}
+    <div class="d-flex justify-content-center pb-5">
+        <nav>
+            <ul class="pagination justify-content-center mb-0">
+                <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('filter_results', query_text=query_text, filter_type=filter_type, page=current_page-1) }}">
+                        <i class="fas fa-chevron-left me-1"></i> Précédent
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link fw-bold text-dark px-4">Page {{ current_page }} / {{ total_pages }}</span>
+                </li>
+                <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('filter_results', query_text=query_text, filter_type=filter_type, page=current_page+1) }}">
+                        Suivant <i class="fas fa-chevron-right ms-1"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="resourceOffcanvas" aria-labelledby="offcanvasLabel">
+    <div class="offcanvas-header border-bottom bg-white">
+        <h5 class="offcanvas-title fw-bold text-truncate pe-3" id="offcanvasLabel">Détails</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0 bg-light">
+        <div id="offcanvasContent"></div>
+    </div>
+    <div class="offcanvas-footer p-3 border-top bg-white text-center shadow-sm">
+        <a href="#" id="fullPageBtn" class="btn btn-primary w-100">
+            <i class="fas fa-compass me-2"></i> Explorer cette ressource
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+/** Échappe les caractères HTML spéciaux. */
+function escapeHtml(text) {
+    if (text == null) return "";
+    return String(text).replace(/[&<>"']/g, function(m) {
+        return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m];
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // --- Gestion de l'Offcanvas (Détails) ---
+    var myOffcanvas = document.getElementById('resourceOffcanvas');
+    
+    myOffcanvas.addEventListener('show.bs.offcanvas', function (event) {
+        var button = event.relatedTarget; 
+        var uri = button.getAttribute('data-uri');
+        var title = button.getAttribute('data-title');
+        
+        document.getElementById('offcanvasLabel').innerText = title || "Détails";
+        document.getElementById('fullPageBtn').setAttribute('href', '/update_resource/' + encodeURIComponent(uri));
+        
+        var contentDiv = document.getElementById('offcanvasContent');
+        contentDiv.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2 small text-muted">Chargement des données...</p></div>';
+        
+        // Récupération des détails via API
+        fetch('/api/resource_details?uri=' + encodeURIComponent(uri))
+            .then(response => response.json())
+            .then(data => {
+                if(data.success && data.details && data.details.length > 0) {
+                    // Regroupement des valeurs par propriété
+                    let grouped = {};
+                    data.details.forEach(x => {
+                        if(x.Property.endsWith('#type')) return;
+                        const propLabel = x.PropertyLabel || (x.Property.includes(':') && !x.Property.startsWith('http') ? x.Property : x.Property.split(/[#/]/).pop());
+                        if(!grouped[x.Property]) grouped[x.Property] = { label: propLabel, values: [] };
+                        grouped[x.Property].values.push({
+                            val: x.Value,
+                            label: x.ValueLabel,
+                            isLink: x.Value.startsWith('http')
+                        });
+                    });
+
+                    // Génération HTML
+                    let html = '<div class="list-group list-group-flush">';
+                    for (const [propUri, groupData] of Object.entries(grouped)) {
+                        let valuesHtml = groupData.values.map(v => {
+                            const displayVal = v.isLink ? `<a href="/update_resource/${encodeURIComponent(v.val)}" class="text-decoration-none">${v.label}</a>` : v.label;
+                            const extLink = v.isLink ? `<a href="${v.val}" target="_blank" class="btn btn-light border btn-sm btn-action-xs text-secondary" title="Ouvrir le lien original"><i class="fas fa-external-link-alt"></i></a>` : '';
+
+                            return `<div class="detail-value-item">
+                                        <span class="text-dark small text-break">${displayVal}</span>
+                                        <div class="d-flex align-items-center">
+                                            ${extLink}
+                                        </div>
+                                    </div>`;
+                        }).join('');
+
+                        html += `
+                        <div class="detail-row bg-white">
+                            <div class="d-flex w-100">
+                                <div class="detail-label text-truncate" title="${propUri}">${groupData.label}</div>
+                                <div class="detail-values">${valuesHtml}</div>
+                            </div>
+                        </div>`;
+                    }
+                    html += '</div>';
+                    contentDiv.innerHTML = html;
+                } else {
+                    contentDiv.innerHTML = '<div class="alert alert-warning m-3"><i class="fas fa-exclamation-circle me-2"></i>Aucun détail supplémentaire trouvé.</div>';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                contentDiv.innerHTML = '<div class="alert alert-danger m-3">Erreur de chargement des données.</div>';
+            });
+    });
+
+    // --- Visualisation des résultats ---
+    // Injection sécurisée des données Jinja vers JS
+    const currentResults = {% if results %}{{ results|tojson|safe }}{% else %}[]{% endif %};
+    const normalizedResults = currentResults.map(r => ({
+        SubjectURI: r.subject, 
+        SubjectLabel: r.label,
+        Type: r.type
+    }));
+
+    const vizBtn = document.getElementById('visualizeResultsBtn');
+    if (vizBtn) {
+        vizBtn.addEventListener('click', function() {
+            if(!normalizedResults.length) return alert("Aucun résultat à visualiser.");
+            
+            const originalText = vizBtn.innerHTML;
+            vizBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
+            vizBtn.disabled = true;
+
+            fetch('/api/prepare_visualization', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ visualization_data: normalizedResults })
+            })
+            .then(response => response.json())
+            .then(data => {
+                vizBtn.innerHTML = originalText;
+                vizBtn.disabled = false;
+                if(data.success) window.open('/visualize', '_blank');
+                else alert("Erreur : " + data.message);
+            })
+            .catch(err => {
+                console.error(err);
+                vizBtn.innerHTML = originalText;
+                vizBtn.disabled = false;
+                alert("Erreur de communication.");
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,298 @@
+{% extends "layout.html" %}
+
+{% block title %}Parcours de graphe - Sematheque{% endblock %}
+
+{% block head %}
+<style>
+    /** Styles spécifiques à la page de parcours de graphe. */
+
+    .resource-select-card { cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
+    .resource-select-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .resource-select-card.selected { border-color: #0d6efd; background-color: #f8f9fa; }
+
+    .root-node { margin: 2rem 0; display: flex; justify-content: center; }
+    .root-node-content { padding: 1.5rem; background-color: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); border: 2px solid #0d6efd; position: relative; min-width: 280px; text-align: center; }
+    
+    .node-group { background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 1.5rem; border: 1px solid #f0f0f0; overflow: hidden; }
+    .node-group-header { padding: 12px 15px; background: #f8f9fa; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .type-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+
+    .relation-group { margin: 10px; border: 1px solid #e9ecef; border-radius: 6px; }
+    .relation-title { padding: 8px 12px; background: #fff; font-weight: 600; font-size: 0.9rem; color: #555; border-bottom: 1px solid #f0f0f0; cursor: pointer; display: flex; justify-content: space-between; }
+    
+    /* Grille responsive pour les cartes résultats (3 par ligne sur desktop) */
+    .relation-items { 
+        padding: 15px; 
+        display: none; /* Masqué par défaut (accordéon) */
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+        gap: 15px; 
+    }
+    /* Force l'affichage Grid quand jQuery "show" est appliqué (display: block par défaut) */
+    .relation-items[style*="display: block"], .relation-items[style*="display:block"] {
+        display: grid !important;
+    }
+
+    .resource-card { 
+        border: 1px solid #eee; border-radius: 6px; background: #fff; 
+        transition: all 0.2s; position: relative; height: 100%; display: flex; flex-direction: column;
+    }
+    .resource-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); border-color: #b0c4de; }
+    .resource-card-header { padding: 10px; border-bottom: 1px solid #f5f5f5; font-weight: 600; font-size: 0.9rem; background: #fcfcfc; flex-grow: 1; }
+    .resource-card-body { padding: 10px; font-size: 0.8rem; margin-top: auto; }
+    
+    .depth-section { margin-bottom: 2rem; padding-left: 1rem; border-left: 3px solid #eee; }
+    .depth-1 { border-left-color: #28a745; }
+    .depth-2 { border-left-color: #17a2b8; }
+    .depth-3 { border-left-color: #ffc107; }
+    
+    .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3"><h5 class="mb-0 text-primary"><i class="fas fa-search me-2"></i>Point de départ</h5></div>
+                <div class="card-body p-4">
+                    <form method="post" action="{{ url_for('parcours') }}" id="resourceForm">
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase">1. Type de ressource</label>
+                            <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+                                {% for type in available_types %}
+                                <div class="col">
+                                    <div class="card resource-select-card h-100 {% if resource_type == type.label %}selected{% endif %}" onclick="selectType('{{ type.label }}')">
+                                        <div class="card-body text-center py-3 px-1">
+                                            <input type="radio" class="btn-check" name="resource_type" value="{{ type.label }}" {% if resource_type == type.label %}checked{% endif %}>
+                                            <div class="mb-2 text-primary"><i class="fas fa-cube fa-lg"></i></div>
+                                            <div class="small fw-bold text-truncate" title="{{ type.label }}">{{ type.label }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase">2. Ressource</label>
+                            <select class="form-select select2-search" id="resource_search" name="resource_search" required>
+                                <option value="">Sélectionner une ressource...</option>
+                                {% if selected_resource_uri %}
+                                <option value="{{ selected_resource_uri }}" selected>{{ selected_resource_label }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase">3. Profondeur</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="depth_level" id="depth1" value="1">
+                                <label class="btn btn-outline-secondary" for="depth1">Niveau 1</label>
+                                <input type="radio" class="btn-check" name="depth_level" id="depth2" value="2" checked>
+                                <label class="btn btn-outline-secondary" for="depth2">Niveau 2</label>
+                                <input type="radio" class="btn-check" name="depth_level" id="depth3" value="3">
+                                <label class="btn btn-outline-secondary" for="depth3">Niveau 3</label>
+                            </div>
+                        </div>
+                        <div class="d-grid"><button type="submit" class="btn btn-primary btn-lg shadow-sm">Explorer le graphe</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="explorationResults" style="display: none;">
+        <div class="alert alert-light border d-flex justify-content-between align-items-center mb-4">
+            <div><i class="fas fa-sitemap text-primary me-2"></i><strong>Résultats :</strong> <span id="totalNodes" class="badge bg-secondary">0</span> liens</div>
+            <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary" onclick="$('.relation-items').slideDown()">Déplier tout</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="$('.relation-items').slideUp()">Replier tout</button>
+            </div>
+        </div>
+
+        <div class="mb-5">
+            <h4 class="text-success border-bottom pb-2 mb-3"><i class="fas fa-arrow-up me-2"></i>Ascendants (Sources)</h4>
+            <div id="ancestorSection"></div>
+        </div>
+
+        <div class="mb-5 text-center"><div id="rootNode"></div></div>
+
+        <div class="mb-5">
+            <h4 class="text-info border-bottom pb-2 mb-3"><i class="fas fa-arrow-down me-2"></i>Descendants (Cibles)</h4>
+            <div id="descendantSection"></div>
+        </div>
+    </div>
+    
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
+        <h4 class="text-primary">Exploration en cours...</h4>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+/**
+ * Gestion du parcours de graphe : sélection des types, recherche de ressource,
+ * exploration via API et rendu visuel des relations ascendantes/descendantes.
+ */
+
+let resourceLabels = [];
+try { resourceLabels = {{ resource_labels|safe }}; } catch(e) { resourceLabels = []; }
+
+$(document).ready(function() {
+    // Initialisation Select2
+    $('.select2-search').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Choisir une ressource...',
+        data: resourceLabels.map(r => ({ id: r.uri, text: r.label }))
+    });
+
+    // Gestion de la soumission du formulaire
+    $('#resourceForm').on('submit', function(e) {
+        if($(this).attr('method') === 'get') return true;
+        e.preventDefault();
+        
+        const uri = $('#resource_search').val();
+        const depth = $('input[name="depth_level"]:checked').val();
+        const label = $('#resource_search option:selected').text();
+        const type = $('input[name="resource_type"]:checked').val();
+        
+        if(!uri) return alert("Veuillez choisir une ressource");
+        startExploration(uri, label, type, depth);
+    });
+
+    // Accordéon pour déplier/plier les relations
+    $(document).on('click', '.relation-title', function() {
+        $(this).next('.relation-items').slideToggle(200);
+        $(this).find('i.fa-chevron-down').toggleClass('fa-rotate-180');
+    });
+});
+
+/** Sélectionne un type de ressource et recharge le formulaire. */
+function selectType(label) {
+    $('input[name="resource_type"][value="' + label + '"]').prop('checked', true);
+    $('.resource-select-card').removeClass('selected');
+    $(`input[name="resource_type"][value="${label}"]`).closest('.resource-select-card').addClass('selected');
+    $('#resourceForm').attr('method', 'get').submit();
+}
+
+/** Lance la requête AJAX d'exploration du graphe. */
+function startExploration(uri, label, type, depth) {
+    $('#loadingOverlay').fadeIn();
+    $.ajax({
+        url: '/api/graph/explore', method: 'POST', data: { uri: uri, depth: depth },
+        success: function(data) {
+            $('#loadingOverlay').fadeOut();
+            if(!data.results || !data.results.bindings) return alert("Erreur format données");
+            processAndRender(data.results.bindings, {uri, label, type});
+        },
+        error: function() { $('#loadingOverlay').fadeOut(); alert("Erreur lors de l'exploration"); }
+    });
+}
+
+/** Traite les données brutes SPARQL et organise l'affichage hiérarchique. */
+function processAndRender(bindings, central) {
+    $('#explorationResults').show();
+    
+    // Affichage du nœud central
+    $('#rootNode').html(`
+        <div class="root-node-content">
+            <h3 class="h4 mb-1">${central.label}</h3>
+            <span class="badge bg-primary mb-2">${central.type}</span>
+            <div class="text-muted small font-monospace">${central.uri}</div>
+        </div>
+    `);
+
+    // Structuration des données en arbre
+    let tree = { ancestor: {}, descendant: {} };
+    let count = 0;
+
+    bindings.forEach(b => {
+        const dir = b.direction?.value;
+        const depth = b.depth?.value;
+        if (!dir) return;
+
+        let node = (dir === 'ancestor') ? 
+            { uri: b.start.value, label: b.startLabel?.value, type: b.startType?.value } : 
+            { uri: b.end.value, label: b.endLabel?.value, type: b.endType?.value };
+            
+        if(!node.label) node.label = extractName(node.uri);
+        if(!node.type) node.type = "Ressource"; else node.type = extractName(node.type);
+        
+        const predLabel = b.predicateLabel?.value || extractName(b.predicate.value);
+
+        if(!tree[dir][depth]) tree[dir][depth] = {};
+        if(!tree[dir][depth][node.type]) tree[dir][depth][node.type] = {};
+        if(!tree[dir][depth][node.type][predLabel]) tree[dir][depth][node.type][predLabel] = [];
+        
+        if(!tree[dir][depth][node.type][predLabel].some(n => n.uri === node.uri)) {
+            tree[dir][depth][node.type][predLabel].push(node);
+            count++;
+        }
+    });
+
+    $('#totalNodes').text(count);
+    renderSection('ancestor', tree.ancestor, '#ancestorSection');
+    renderSection('descendant', tree.descendant, '#descendantSection');
+}
+
+/** Génère le HTML pour une section (Ascendant/Descendant) avec regroupement par niveau/type/propriété. */
+function renderSection(direction, dataByDepth, selector) {
+    const container = $(selector).empty();
+    if(Object.keys(dataByDepth).length === 0) { container.html('<div class="alert alert-light">Aucune relation trouvée.</div>'); return; }
+
+    Object.keys(dataByDepth).sort().forEach(depth => {
+        const types = dataByDepth[depth];
+        const color = depth == 1 ? 'success' : (depth == 2 ? 'info' : 'warning');
+        
+        let html = `<div class="depth-section depth-${depth}"><h5 class="mb-3 text-${color}">Niveau ${depth}</h5>`;
+            
+        for(const [type, predicates] of Object.entries(types)) {
+            const tc = stringToColor(type);
+            html += `
+            <div class="node-group">
+                <div class="node-group-header"><div><span class="type-badge" style="background:${tc}20; color:${tc}"><i class="fas fa-cube me-1"></i> ${type}</span></div></div>
+                <div class="p-2">`;
+                
+            for(const [pred, nodes] of Object.entries(predicates)) {
+                html += `
+                <div class="relation-group">
+                    <div class="relation-title">
+                        <span>${pred} <span class="badge bg-light text-dark border ms-1">${nodes.length}</span></span>
+                        <i class="fas fa-chevron-down text-muted"></i>
+                    </div>
+                    <div class="relation-items">`; // Grid CSS appliqué ici
+                nodes.forEach(n => {
+                    html += `<div class="resource-card">
+                        <div class="resource-card-header" title="${n.label}">${n.label}</div>
+                        <div class="resource-card-body">
+                            <a href="/update_resource/${encodeURIComponent(n.uri)}" class="btn btn-sm btn-outline-primary w-100">Voir</a>
+                        </div>
+                    </div>`;
+                });
+                html += `</div></div>`;
+            }
+            html += `</div></div>`;
+        }
+        html += `</div>`;
+        container.append(html);
+    });
+}
+
+/** Extrait un nom lisible depuis une URI. */
+function extractName(uri) { if(!uri) return "Inconnu"; return uri.split(/[#/]/).pop().replace(/_/g, ' '); }
+
+/** Génère une couleur hexadécimale unique à partir d'une chaîne de caractères. */
+function stringToColor(str) {
+    let hash = 0; for (let i=0;i<str.length;i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    const c = (hash & 0x00FFFFFF).toString(16).toUpperCase(); return "#" + "00000".substring(0, 6 - c.length) + c;
+}
+</script>
+{% endblock %}

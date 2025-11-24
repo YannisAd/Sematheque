@@ -1,0 +1,347 @@
+/* Sematheque - Styles personnalisés */
+
+/* Variables de couleurs */
+:root {
+    --primary-color: #1f77b4;
+    --secondary-color: #ff7f0e;
+    --accent-color: #2ca02c;
+    --text-color: #2c3e50;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #6c757d;
+    --border-color: #dee2e6;
+    --card-bg: white;
+    --success-color: #28a745;
+    --info-color: #17a2b8;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+  }
+  
+  /* Styles de base */
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+    color: var(--accent-color);
+  }
+  
+  /* Composants personnalisés */
+  .card {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filter-tag {
+    display: inline-block;
+    background-color: var(--light-gray);
+    border-radius: 1rem;
+    padding: 0.25rem 0.75rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+  }
+  
+  .filter-tag:hover {
+    background-color: var(--medium-gray);
+  }
+  
+  .resource-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    position: relative;
+  }
+  
+  .resource-link:hover {
+    text-decoration: underline;
+  }
+  
+  .resource-link:after {
+    content: '🔗';
+    font-size: 0.8em;
+    margin-left: 0.2em;
+    opacity: 0.7;
+  }
+  
+  .property-name {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+  
+  .property-value {
+    margin-left: 0.5rem;
+  }
+  
+  .action-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.25rem;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    text-decoration: none;
+  }
+  
+  .action-button:hover {
+    background-color: var(--accent-color);
+    color: white;
+    text-decoration: none;
+  }
+  
+  .secondary-button {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+  }
+  
+  .secondary-button:hover {
+    background-color: var(--medium-gray);
+    color: var(--text-color);
+  }
+  
+  .divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 1rem 0;
+  }
+  
+  /* Amélioration des composants Streamlit */
+  .stButton > button {
+    width: 100%;
+    border-radius: 0.25rem;
+    font-weight: 500;
+  }
+  
+  .stTextInput > div > div > input {
+    border-radius: 0.25rem;
+  }
+  
+  .stSelectbox > div > div > div {
+    border-radius: 0.25rem;
+  }
+  
+  /* Styling des expandeurs */
+  .streamlit-expanderHeader {
+    font-weight: 600;
+    background-color: var(--light-gray);
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .streamlit-expanderContent {
+    padding: 0.5rem;
+    border-left: 2px solid var(--border-color);
+    margin-left: 0.5rem;
+  }
+  
+  /* Styles pour l'écran d'accueil */
+  .welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--light-gray);
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .welcome-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+  }
+  
+  .welcome-subtitle {
+    font-size: 1.2rem;
+    color: var(--dark-gray);
+    margin-bottom: 2rem;
+  }
+  
+  /* Informations sur les résultats */
+  .result-stats {
+    background-color: var(--light-gray);
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .result-count {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+  
+  /* Mode sombre */
+  .dark-mode {
+    --primary-color: #4dabf5;
+    --secondary-color: #ffab40;
+    --text-color: #e0e0e0;
+    --light-gray: #2d2d2d;
+    --medium-gray: #3d3d3d;
+    --dark-gray: #9e9e9e;
+    --border-color: #444444;
+    --card-bg: #1e1e1e;
+  }
+  
+  .dark-mode body {
+    background-color: #121212;
+    color: var(--text-color);
+  }
+  
+  .dark-mode .streamlit-expanderHeader {
+    background-color: var(--light-gray);
+  }
+  
+  /* Style pour les badges */
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.25rem;
+  }
+  
+  .badge-personne {
+    background-color: #cfe8ff;
+    color: #0066cc;
+  }
+  
+  .badge-article {
+    background-color: #d1f7c4;
+    color: #2e7d32;
+  }
+  
+  .badge-encyclopedie {
+    background-color: #ffd8b2;
+    color: #e65100;
+  }
+  
+  .badge-ouvrage {
+    background-color: #e1bee7;
+    color: #6a1b9a;
+  }
+  
+  .badge-theme {
+    background-color: #ffecb3;
+    color: #ff8f00;
+  }
+  
+  /* Animation de chargement */
+  .loading-animation {
+    width: 100%;
+    height: 4px;
+    background-color: var(--light-gray);
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .loading-animation::after {
+    content: '';
+    display: block;
+    width: 30%;
+    height: 100%;
+    background-color: var(--primary-color);
+    position: absolute;
+    left: -30%;
+    animation: loading 1.5s ease infinite;
+  }
+  
+  @keyframes loading {
+    0% {
+      left: -30%;
+    }
+    100% {
+      left: 130%;
+    }
+  }
+  
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+  
+  .page-item {
+    margin: 0 0.25rem;
+  }
+  
+  .page-link {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.25rem;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  
+  .page-link:hover {
+    background-color: var(--medium-gray);
+    text-decoration: none;
+  }
+  
+  .page-item.active .page-link {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  /* Tooltips */
+  .tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip .tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: var(--dark-gray);
+    color: white;
+    text-align: center;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }

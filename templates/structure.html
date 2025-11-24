@@ -1,0 +1,436 @@
+{% extends "layout.html" %}
+
+{% block title %}Architecture & Technologies{% endblock %}
+
+{% block head %}
+<style>
+    /** * Styles ergonomiques pour la page Structure.
+     * Focus sur la lisibilité, les zones de clic et le feedback visuel.
+     */
+    
+    :root {
+        --card-radius: 16px;
+        --transition-fast: 0.2s ease;
+        --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
+        --shadow-hover: 0 20px 60px -15px rgba(0,0,0,0.15);
+    }
+
+    /* --- En-tête Simplifié --- */
+    .hero-header {
+        background: white;
+        padding: 3rem 0 4rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #f0f0f0;
+        text-align: center;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #eef2ff;
+        color: #4f46e5;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    /* --- Cartes de Navigation (Plan du Site) --- */
+    .nav-section-title {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #9ca3af;
+        margin: 3rem 0 1.5rem;
+        font-weight: 700;
+    }
+
+    .nav-card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        height: 100%;
+    }
+
+    .nav-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: var(--card-radius);
+        padding: 1.5rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        transition: all var(--transition-fast);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-card:hover {
+        border-color: #a5b4fc;
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    /* Indicateur visuel au survol */
+    .nav-card::after {
+        content: '\f061'; /* FontAwesome arrow-right */
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        position: absolute;
+        right: 1.5rem;
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: all var(--transition-fast);
+        color: #4f46e5;
+    }
+
+    .nav-card:hover::after {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .nav-icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        margin-right: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    /* Couleurs sémantiques douces */
+    .bg-blue-soft { background: #eff6ff; color: #3b82f6; }
+    .bg-green-soft { background: #f0fdf4; color: #22c55e; }
+    .bg-purple-soft { background: #f5f3ff; color: #8b5cf6; }
+    .bg-orange-soft { background: #fff7ed; color: #f97316; }
+
+    .nav-content h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem;
+        color: #1f2937;
+    }
+
+    .nav-content p {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    /* --- Stack Technique (Cartes propres) --- */
+    .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .tech-card {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 2rem;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid transparent;
+        height: 100%;
+    }
+
+    .tech-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .tech-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .tech-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        color: #374151;
+    }
+
+    .tech-item i {
+        width: 24px;
+        margin-right: 10px;
+        text-align: center;
+    }
+
+    /* --- Flux de Données (Timeline Horizontale) --- */
+    .flow-wrapper {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 3rem 2rem;
+        box-shadow: var(--shadow-soft);
+        position: relative;
+        overflow-x: auto; /* Scroll horizontal sur mobile */
+    }
+
+    .flow-steps {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        min-width: 600px; /* Force la largeur sur mobile pour lisibilité */
+    }
+
+    /* Ligne connectrice */
+    .flow-steps::before {
+        content: '';
+        position: absolute;
+        top: 24px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #e5e7eb;
+        z-index: 0;
+    }
+
+    .flow-step {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        flex: 1;
+        padding: 0 10px;
+    }
+
+    .flow-icon-circle {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #9ca3af;
+        transition: all 0.3s;
+    }
+
+    /* État actif/hover pour le flux */
+    .flow-step:hover .flow-icon-circle {
+        border-color: #4f46e5;
+        color: #4f46e5;
+        transform: scale(1.1);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    }
+
+    .flow-label { font-weight: 700; color: #111827; margin-bottom: 0.25rem; }
+    .flow-sub { font-size: 0.8rem; color: #6b7280; }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+        .hero-header { padding: 2rem 0; }
+        .nav-card::after { display: none; } /* Pas de hover sur mobile */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="hero-header">
+    <div class="container">
+        <span class="hero-badge">Documentation Technique</span>
+        <h1 class="display-5 fw-bold text-dark mb-2">Structure de l'Application</h1>
+        <p class="text-muted mx-auto" style="max-width: 600px;">
+            Vue d'ensemble de l'architecture, des technologies utilisées et plan de navigation pour comprendre le fonctionnement de Sematheque.
+        </p>
+    </div>
+</section>
+
+<div class="container pb-5">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h6 class="nav-section-title"><i class="fas fa-sitemap me-2"></i>Navigation Principale</h6>
+            
+            <div class="row g-3">
+                <div class="col-md-6 col-lg-4">
+                    <a href="{{ url_for('index') }}" class="nav-card-link">
+                        <div class="nav-card">
+                            <div class="nav-icon-box bg-blue-soft"><i class="fas fa-home"></i></div>
+                            <div class="nav-content">
+                                <h3>Accueil</h3>
+                                <p>Tableau de bord et accès rapide.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <a href="{{ url_for('search') }}" class="nav-card-link">
+                        <div class="nav-card">
+                            <div class="nav-icon-box bg-blue-soft"><i class="fas fa-search"></i></div>
+                            <div class="nav-content">
+                                <h3>Recherche</h3>
+                                <p>Moteur textuel global.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <a href="{{ url_for('explore') }}" class="nav-card-link">
+                        <div class="nav-card">
+                            <div class="nav-icon-box bg-blue-soft"><i class="fas fa-compass"></i></div>
+                            <div class="nav-content">
+                                <h3>Exploration</h3>
+                                <p>Navigation par facettes.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <h6 class="nav-section-title"><i class="fas fa-tools me-2"></i>Outils d'Analyse</h6>
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <a href="{{ url_for('parcours') }}" class="nav-card-link">
+                        <div class="nav-card">
+                            <div class="nav-icon-box bg-green-soft"><i class="fas fa-route"></i></div>
+                            <div class="nav-content">
+                                <h3>Parcours Sémantique</h3>
+                                <p>Navigation de proche en proche dans le graphe.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-6">
+                    <a href="{{ url_for('ontology_view') }}" class="nav-card-link">
+                        <div class="nav-card">
+                            <div class="nav-icon-box bg-purple-soft"><i class="fas fa-project-diagram"></i></div>
+                            <div class="nav-content">
+                                <h3>Ontologie</h3>
+                                <p>Visualisation structurelle des classes.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-6">
+                    <a href="{{ url_for('visualize') }}" class="nav-card-link">
+                        <div class="nav-card">
+                            <div class="nav-icon-box bg-orange-soft"><i class="fas fa-chart-pie"></i></div>
+                            <div class="nav-content">
+                                <h3>Analyses</h3>
+                                <p>Graphiques et statistiques interactives.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5 text-muted opacity-25">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold text-dark">Stack Technique</h2>
+                <p class="text-muted">Les technologies qui propulsent l'application.</p>
+            </div>
+
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <div class="tech-header">
+                        <div class="nav-icon-box bg-blue-soft mb-0"><i class="fas fa-laptop-code"></i></div>
+                        <h5 class="mb-0 fw-bold">Frontend</h5>
+                    </div>
+                    <ul class="tech-list">
+                        <li class="tech-item"><i class="fab fa-html5 text-danger"></i> HTML5 / CSS3</li>
+                        <li class="tech-item"><i class="fab fa-bootstrap text-primary"></i> Bootstrap 5 (Responsive)</li>
+                        <li class="tech-item"><i class="fab fa-js text-warning"></i> JavaScript (ES6+)</li>
+                        <li class="tech-item"><i class="fas fa-chart-bar text-info"></i> Chart.js & Vis.js</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-header">
+                        <div class="nav-icon-box bg-green-soft mb-0"><i class="fas fa-cogs"></i></div>
+                        <h5 class="mb-0 fw-bold">Backend</h5>
+                    </div>
+                    <ul class="tech-list">
+                        <li class="tech-item"><i class="fab fa-python text-primary"></i> Python 3.9+</li>
+                        <li class="tech-item"><i class="fas fa-flask text-dark"></i> Flask Framework</li>
+                        <li class="tech-item"><i class="fas fa-table text-secondary"></i> Pandas (Dataframe)</li>
+                        <li class="tech-item"><i class="fas fa-bolt text-warning"></i> SPARQLWrapper</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-header">
+                        <div class="nav-icon-box bg-orange-soft mb-0"><i class="fas fa-database"></i></div>
+                        <h5 class="mb-0 fw-bold">Données</h5>
+                    </div>
+                    <ul class="tech-list">
+                        <li class="tech-item"><i class="fas fa-server text-muted"></i> Apache Fuseki</li>
+                        <li class="tech-item"><i class="fas fa-cube text-info"></i> RDF / RDFS / OWL</li>
+                        <li class="tech-item"><i class="fas fa-search text-success"></i> SPARQL 1.1</li>
+                        <li class="tech-item"><i class="fas fa-exchange-alt text-dark"></i> JSON / CSV Exports</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5 text-muted opacity-25">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold text-dark">Comment ça marche ?</h2>
+                <p class="text-muted">Le cycle de vie d'une requête utilisateur.</p>
+            </div>
+
+            <div class="flow-wrapper">
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="flow-icon-circle"><i class="fas fa-mouse-pointer"></i></div>
+                        <div class="flow-label">Utilisateur</div>
+                        <div class="flow-sub">Interaction UI</div>
+                    </div>
+
+                    <div class="flow-step">
+                        <div class="flow-icon-circle"><i class="fas fa-server"></i></div>
+                        <div class="flow-label">Flask</div>
+                        <div class="flow-sub">Routing & Logique</div>
+                    </div>
+
+                    <div class="flow-step">
+                        <div class="flow-icon-circle"><i class="fas fa-code"></i></div>
+                        <div class="flow-label">SPARQL</div>
+                        <div class="flow-sub">Construction requête</div>
+                    </div>
+
+                    <div class="flow-step">
+                        <div class="flow-icon-circle"><i class="fas fa-database"></i></div>
+                        <div class="flow-label">Fuseki</div>
+                        <div class="flow-sub">Extraction RDF</div>
+                    </div>
+
+                    <div class="flow-step">
+                        <div class="flow-icon-circle"><i class="fas fa-paint-brush"></i></div>
+                        <div class="flow-label">Rendu</div>
+                        <div class="flow-sub">HTML / Graphiques</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
