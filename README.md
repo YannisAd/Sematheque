@@ -40,6 +40,14 @@ l'utilisateur final.
 Suivez ces étapes pour installer l'application localement ou sur un
 serveur.
 
+
+<details>
+  <summary><h3><b>Démonstration d'une installation</b></h3></summary>
+<video src="https://github.com/YannisAd/Sematheque/blob/main/videos/lauch.mp4" width="320" height="240" controls></video>
+
+</details>
+
+
 ## 0.5. Export RDF depuis Omeka ou un entrepôt OAI (Optionnel)
 
 - Export depuis Omeka : [repository](https://github.com/nlasolle/omekas2rdf)
