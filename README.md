@@ -33,12 +33,18 @@ l'utilisateur final.
 ## 🛠 Prérequis
 
 -   **Python 3.8+**
--   Un accès réseau à un **Endpoint SPARQL** (public ou privé).
+-   Un accès réseau à un **Endpoint SPARQL** (public ou privé). Test effectué avec un endpoint [Apache Fuseki](https://jena.apache.org/documentation/fuseki2/).
 
 ## 📥 Installation et Déploiement
 
 Suivez ces étapes pour installer l'application localement ou sur un
 serveur.
+
+## 0.5. Export RDF depuis Omeka ou un entrepôt OAI (Optionnel)
+
+- Export depuis Omeka : [repository](https://github.com/nlasolle/omekas2rdf)
+- Export depuis entrepôt OAI : (prochainement) 
+
 
 ### 1. Cloner le dépôt
 
