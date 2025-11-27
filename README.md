@@ -43,7 +43,7 @@ serveur.
 
 <details>
   <summary><h3><b>Démonstration d'une installation</b></h3></summary>
-<video src="https://github.com/YannisAd/Sematheque/blob/main/videos/lauch.mp4" width="320" height="240" controls></video>
+videos/lauch.mp4
 
 </details>
 
