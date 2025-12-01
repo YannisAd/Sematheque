@@ -19,176 +19,69 @@
     
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary smart-navbar" id="mainNavbar">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
                 {% if project_info and project_info.logo %}
-                <img src="{{ url_for('static', filename='logo.png') }}" alt="Sematheque Logo" class="navbar-logo" id="navbarLogo">
-                {% else %}
-                <span class="fw-bold text-white"><i class="fas fa-project-diagram me-2"></i>Sematheque</span>
+                <img src="{{ url_for('static', filename=project_info.logo) }}" alt="Logo" height="32" class="d-inline-block align-text-top me-2 bg-white rounded p-1">
                 {% endif %}
+                <span class="fw-bold ls-1">{{ project_info.name }}</span>
             </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
-            <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
-                            <i class="fas fa-home me-2"></i> <span class="nav-text">Accueil</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'explore' %}active{% endif %}" href="{{ url_for('explore') }}">
-                            <i class="fas fa-compass me-2"></i> <span class="nav-text">Explorer</span>
-                        </a>
-                    </li>
-                    
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto fw-bold">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}"><i class="fas fa-home me-1"></i> Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('search') }}"><i class="fas fa-search me-1"></i> Recherche</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('parcours') }}"><i class="fas fa-route me-1"></i> Parcours</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('visualization_network') }}"><i class="fas fa-project-diagram me-1"></i> Réseau</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('ontology_view') }}"><i class="fas fa-sitemap me-1"></i> Ontologie</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-tools me-2"></i> <span class="nav-text">Outils</span>
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-info-circle me-1"></i> Infos
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('ontology_view') }}">
-                                <i class="fas fa-project-diagram me-2"></i> Ontologie
-                            </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('parcours') }}">
-                                <i class="fas fa-route me-2"></i> Parcours
-                            </a></li>
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+                            <li><a class="dropdown-item" href="{{ url_for('about') }}">À propos</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('structure') }}">Structure</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('equipe') }}">L'Équipe</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('mention') }}">Mentions Légales</a></li>
                         </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'search' %}active{% endif %}" href="{{ url_for('search') }}">
-                            <i class="fas fa-search me-2"></i> <span class="nav-text">Recherche</span>
-                        </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="navbar-spacer"></div>
-
-    <div class="page-wrapper">
-        <main class="main-content">
-            <div class="container-fluid py-4">
-                <div class="row">
-                    {% if self.sidebar() %}
-                        <div class="col-md-3 col-lg-2"> 
-                            {% block sidebar %}{% endblock %}
-                        </div>
-                        <div class="col-md-9 col-lg-10"> 
-                    {% else %}
-                        <div class="col-12">
-                    {% endif %}
-            
-                        {% with messages = get_flashed_messages(with_categories=true) %}
-                            {% if messages %}
-                                {% for category, message in messages %}
-                                    <div class="alert alert-{{ category }} alert-dismissible fade show mb-4">
-                                        {{ message }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                        {% endwith %}
-            
-                        {% block content %}{% endblock %}
-                    
-                    </div> 
-                </div> 
-            </div>
-        </main>
-
-        <footer class="footer-section">
-            <div class="container">
-                <div class="row py-4">
-                    <div class="col-md-4 mb-3">
-                        <h6 class="footer-title">Sematheque</h6>
-                        <p class="text-muted small">Explorateur de données sémantiques générique.</p>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <h6 class="footer-title">Liens</h6>
-                        <ul class="footer-links">
-                            <li><a href="{{ url_for('about') }}">À propos</a></li>
-                            <li><a href="{{ url_for('structure') }}">Architecture</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <h6 class="footer-title">Légal</h6>
-                        <ul class="footer-links">
-                            <li><a href="{{ url_for('mention') }}">Mentions légales</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="border-top pt-3 text-center">
-                    <small class="text-muted">&copy; 2025 Sematheque</small>
-                </div>
-            </div>
-        </footer>
+    <div class="main-wrapper">
+        {% block content %}{% endblock %}
     </div>
 
+    <footer class="bg-dark text-white py-4 mt-auto border-top border-secondary">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <h5 class="fw-bold mb-1">{{ project_info.name }}</h5>
+                    <p class="small text-muted mb-0">Plateforme d'exploration de données sémantiques.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <ul class="list-inline mb-0 footer-links small">
+                        <li class="list-inline-item"><a href="{{ url_for('about') }}" class="text-white-50">À propos</a></li>
+                        <li class="list-inline-item mx-2 text-secondary">•</li>
+                        <li class="list-inline-item"><a href="{{ url_for('mention') }}" class="text-white-50">Mentions légales</a></li>
+                        <li class="list-inline-item mx-2 text-secondary">•</li>
+                        <li class="list-inline-item"><a href="https://github.com" target="_blank" class="text-white-50"><i class="fab fa-github"></i> GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <style>
-    /** Styles globaux de mise en page. */
-    
-    html, body {
-        height: 100%;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0; padding: 0;
-        background-color: #f8f9fa;
-    }
-
-    .page-wrapper {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .main-content {
-        flex: 1;
-        padding-top: 1rem; 
-    }
-
-    /* Navbar intelligente */
-    .smart-navbar {
-        position: fixed;
-        top: 0; left: 0; width: 100%;
-        z-index: 1030;
-        transition: transform 0.3s ease-in-out, height 0.3s ease;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        height: 80px;
-    }
-
-    .smart-navbar.compact { height: 60px; }
+    body { display: flex; flex-direction: column; min-height: 100vh; background-color: #f8f9fa; }
+    .smart-navbar { transition: all 0.3s ease; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .smart-navbar.compact { padding-top: 0.2rem; padding-bottom: 0.2rem; }
     .smart-navbar.scrolled-up { transform: translateY(-100%); }
-    .smart-navbar.show-on-hover { transform: translateY(0); }
-
-    .navbar-logo { height: 40px; transition: height 0.3s; }
-    .smart-navbar.compact .navbar-logo { height: 30px; }
-
-    .navbar-spacer { display: block; width: 100%; height: 80px; }
-    
-    .mouse-detector {
-        position: fixed; top: 0; left: 0; width: 100%; height: 20px; z-index: 1040;
-    }
-
-    /* Dropdown */
-    .dropdown-menu {
-        border: none;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        border-radius: 0 0 8px 8px;
-        margin-top: 0;
-    }
-
-    /* Footer */
-    .footer-section {
-        background: #fff; border-top: 1px solid #dee2e6; margin-top: auto;
-    }
-    .footer-title { font-weight: 700; color: #333; margin-bottom: 1rem; }
-    .footer-links { list-style: none; padding: 0; }
-    .footer-links li { margin-bottom: 0.5rem; }
-    .footer-links a { color: #6c757d; text-decoration: none; }
+    .footer-links a { text-decoration: none; }
     .footer-links a:hover { color: #0d6efd; }
 
     .sidebar-clean { top: 80px; height: calc(100vh - 80px); }
@@ -199,22 +92,15 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     
     <script>
-    /**
-     * Gestion du comportement de la barre de navigation au scroll.
-     * La barre se compacte lors du défilement et se cache/réapparaît selon la direction.
-     */
     $(document).ready(function() {
         var lastScrollTop = 0;
         var navbar = $('.smart-navbar');
         
         $(window).scroll(function() {
             var st = $(this).scrollTop();
-            
-            // Mode compact
             if (st > 50) navbar.addClass('compact');
             else navbar.removeClass('compact');
             
-            // Cacher/Montrer selon direction
             if (st > lastScrollTop && st > 100) {
                 navbar.addClass('scrolled-up');
             } else {
@@ -223,13 +109,12 @@
             lastScrollTop = st;
         });
 
-        // Réapparition si la souris est en haut de page
+        // Détection souris haut pour réafficher
         $(document).mousemove(function(e) {
-            if(e.clientY < 50) navbar.removeClass('scrolled-up');
+            if (e.clientY < 50) navbar.removeClass('scrolled-up');
         });
     });
     </script>
-    
     {% block scripts %}{% endblock %}
 </body>
 </html>

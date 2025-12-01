@@ -1,7 +1,16 @@
 {
     "app_settings": {
-        "name": "Sematheque",
-        "sparql_endpoint": "http://testyannis.henripoincare.fr/PatriMaths/",
+        "name": "Sematheque Fédérée (PatriMaths + Sciences Po)",
+        "endpoints": [
+            {
+                "name": "PatriMaths",
+                "url": "http://testyannis.henripoincare.fr/PatriMaths/"
+            },
+            {
+                "name": "Sciences Po",
+                "url": "http://testyannis.henripoincare.fr/test_SciencePo/query"
+            }
+        ],
         "main_namespace_uri": "http://patrimaths.fr/pmo#",
         "main_namespace_prefix": "pmo",
         "language": "fr"
@@ -9,26 +18,41 @@
     "prefixes": {
         "pmo": "http://patrimaths.fr/pmo#",
         "PMe": "urn:absolute:PatriMaths_Ontology_encyclopedie",
-        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "ahpo": "Http://e-hp.ahp-numerique.fr/ahpo#",
+        "o": "http://omeka.org/s/vocabs/o#",
         "dcterms": "http://purl.org/dc/terms/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "foaf": "http://xmlns.com/foaf/0.1/",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
         "owl": "http://www.w3.org/2002/07/owl#",
-        "ahpo": "Http://e-hp.ahp-numerique.fr/ahpo#"
+        "xsd": "http://www.w3.org/2001/XMLSchema#"
     },
     "visualization": {
         "hidden_properties": [
             "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-            "http://omeka.org/s/vocabs/o#item_set"
+            "http://omeka.org/s/vocabs/o#item_set",
+            "http://omeka.org/s/vocabs/o#owner",
+            "http://omeka.org/s/vocabs/o#resource_class",
+            "http://omeka.org/s/vocabs/o#resource_template"
         ],
         "label_properties": [
             "http://www.w3.org/2000/01/rdf-schema#label",
-            "http://purl.org/dc/elements/1.1/title"
+            "http://purl.org/dc/elements/1.1/title",
+            "http://purl.org/dc/terms/title",
+            "http://omeka.org/s/vocabs/o#title",
+            "http://xmlns.com/foaf/0.1/name"
         ]
     },
     "manual_class_mapping": {
-        "Personne": "http://patrimaths.fr/pmo#Personne",
-        "Article": "http://patrimaths.fr/pmo#Article",
-        "Ouvrage": "http://patrimaths.fr/pmo#Ouvrage",
+        "Personne (PMO)": "http://patrimaths.fr/pmo#Personne",
+        "Article (PMO)": "http://patrimaths.fr/pmo#Article",
+        "Ouvrage (PMO)": "http://patrimaths.fr/pmo#Ouvrage",
         "Encyclopédie": "http://patrimaths.fr/pmo#Encyclopedie",
-        "Bibliothèque": "http://patrimaths.fr/pmo#Bibliotheque"
+        "Bibliothèque": "http://patrimaths.fr/pmo#Bibliotheque",
+        "Personne (SciPo)": "http://xmlns.com/foaf/0.1/Person",
+        "Article Académique": "http://purl.org/ontology/bibo/AcademicArticle",
+        "Livre (SciPo)": "http://purl.org/ontology/bibo/Book",
+        "Rapport": "http://purl.org/ontology/bibo/Report",
+        "Thèse": "http://purl.org/ontology/bibo/Thesis"
     }
 }

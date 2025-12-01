@@ -15,6 +15,7 @@ l'utilisateur final.
 
 -   **Exploration à Facettes :** Navigation intuitive dans les données
     via des filtres dynamiques (textuels, numériques, existence).
+-    **🌐 Fédération de Requêtes (Nouveau) :** Connectez plusieurs endpoints SPARQL simultanément. L'application interroge les bases en parallèle et fusionne les résultats pour une vue unifiée.
 -   **Requêtes Imbriquées :** Construction visuelle de requêtes SPARQL
     complexes (ex: *Trouver les Auteurs nés dans une Ville située dans
     un Pays spécifique*).
@@ -130,6 +131,46 @@ L'application sera accessible à : `http://127.0.0.1:5001`
 }
 ```
 
+Une configuration multi-endpoint est également possible comme ceci : 
+
+```json
+{
+    "app_settings": {
+        "name": "Nom de votre Projet",
+        "endpoints": [
+            {
+                "name": "Nom Endpoint 1",
+                "url": "URL_ENDPOINT_1"
+            },
+            {
+                "name": "Nom Endpoint 2",
+                "url": "URL_ENDPOINT_2"
+            }
+        ],
+        "main_namespace_uri": "URI_DE_BASE_DE_VOS_DONNEES",
+        "main_namespace_prefix": "prefixe_principal",
+        "language": "fr"
+    },
+    "prefixes": {
+        "prefix1": "http://uri...",
+        "prefix2": "http://uri..."
+    },
+    "visualization": {
+        "hidden_properties": [
+            "URI_A_CACHER_1", 
+            "URI_A_CACHER_2"
+        ],
+        "label_properties": [
+            "http://www.w3.org/2000/01/rdf-schema#label",
+            "http://purl.org/dc/elements/1.1/title"
+        ]
+    },
+    "manual_class_mapping": {
+        "Nom Affiché 1": "URI_DE_LA_CLASSE_1",
+        "Nom Affiché 2": "URI_DE_LA_CLASSE_2"
+    }
+}
+```
 ------------------------------------------------------------------------
 
 ## 📂 Architecture Technique

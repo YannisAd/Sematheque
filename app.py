@@ -333,20 +333,17 @@ def prepare_visualization():
     Supprime les fichiers temporaires vieux de plus de 2 heures (7200 secondes).
     """
     try:
-        # 1. Nettoyage automatique
         now = time.time()
         if os.path.exists(TEMP_VIS_DIR):
             for filename in os.listdir(TEMP_VIS_DIR):
                 file_path = os.path.join(TEMP_VIS_DIR, filename)
-                # Si le fichier est plus vieux que 2h
                 if filename.endswith('.json') and os.path.isfile(file_path):
                     try:
                         if os.path.getmtime(file_path) < now - 7200:
                             os.remove(file_path)
                     except OSError:
-                        pass # Fichier peut-être verrouillé ou déjà supprimé
+                        pass
 
-        # 2. Traitement des données
         data = request.get_json()
         input_results = data.get('visualization_data', [])
         if not input_results:

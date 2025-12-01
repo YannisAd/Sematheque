@@ -7,8 +7,6 @@
 <script src="https://unpkg.com/@yaireo/tagify/dist/tagify.min.js"></script>
 
 <style>
-    /** Styles personnalisés pour l'interface d'exploration. */
-
     .sidebar-header .select2-container { 
         width: 100% !important; 
         max-width: 100%;
@@ -138,6 +136,18 @@
         <div class="col-12 col-md-3 col-lg-2 sidebar-clean">
             <div class="sidebar-header">
                 <h6 class="fw-bold mb-2 text-uppercase text-muted small ls-1">Ajouter un critère</h6>
+                
+                <div class="d-flex align-items-center justify-content-between mb-3 bg-light p-2 rounded border">
+                    <span class="small fw-bold text-secondary">Logique :</span>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <input type="radio" class="btn-check" name="filterLogic" id="logicAND" value="AND" checked>
+                        <label class="btn btn-outline-primary fw-bold" for="logicAND" title="Tous les critères doivent être remplis">ET</label>
+                        
+                        <input type="radio" class="btn-check" name="filterLogic" id="logicOR" value="OR">
+                        <label class="btn btn-outline-primary fw-bold" for="logicOR" title="Au moins un critère doit être rempli">OU</label>
+                    </div>
+                </div>
+
                 <div class="d-flex gap-2 align-items-center w-100">
                     <div class="flex-grow-1" style="min-width: 0;">
                         <select id="propertySelector" class="form-select form-select-sm"></select>
@@ -280,11 +290,6 @@
 
 {% block scripts %}
 <script>
-/**
- * Gestion logique de l'interface d'exploration et de filtrage.
- * Inclut Select2, Tagify, et la gestion des requêtes AJAX.
- */
-
 let tagifyInstances = {}, currentFilters = {}, currentResults = [], lastSparqlQuery = "";
 
 $(document).ready(function() {
@@ -292,13 +297,11 @@ $(document).ready(function() {
     initPropertySelector();
 });
 
-/** Échappe les caractères HTML spéciaux pour la sécurité. */
 function escapeHtml(text) {
     if (text == null) return "";
     return String(text).replace(/[&<>"']/g, function(m) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]; });
 }
 
-/** Initialise le sélecteur principal de propriétés (sidebar) avec Select2. */
 function initPropertySelector() {
     $('#propertySelector').select2({
         theme: 'bootstrap-5',
@@ -317,7 +320,6 @@ function initPropertySelector() {
     });
 }
 
-/** Configure les écouteurs d'événements globaux pour l'interface. */
 function setupEvents() {
     $('#addFilterBtn').click(() => {
         const data = $('#propertySelector').select2('data')[0];
@@ -428,7 +430,6 @@ function setupEvents() {
     $(document).on('click', '.result-card', function(e) { if($(e.target).closest('a, button, .btn, .dropdown-toggle').length) return; openOffcanvas($(this).data('uri'), $(this).find('.card-title').text()); });
 }
 
-/** Ferme tous les popovers ouverts. */
 function disposeAllPopovers() {
     $('.add-nested-filter').each(function () {
         const popover = bootstrap.Popover.getInstance(this);
@@ -436,7 +437,6 @@ function disposeAllPopovers() {
     });
 }
 
-/** Injecte un filtre programmatiquement (depuis un bouton +). */
 function injectFilter(uri, label, value, realVal) {
     let row = $(`.filter-item-clean[data-property="${uri}"][data-level="0"]`);
     if(!row.length) { addFilterRow(uri, label); row = $(`.filter-item-clean[data-property="${uri}"]`); }
@@ -451,7 +451,6 @@ function injectFilter(uri, label, value, realVal) {
     }, 300);
 }
 
-/** Ajoute une ligne de filtre dans l'interface (racine ou imbriquée). */
 function addFilterRow(uri, label, level=0, parentContainer=null) {
     const id = 'f-' + Math.random().toString(36).substr(2, 9);
     const isNested = level > 0;
@@ -533,7 +532,6 @@ function addFilterRow(uri, label, level=0, parentContainer=null) {
     });
 }
 
-/** Construit l'objet filtre JSON à envoyer au serveur. */
 function buildFilters() {
     let filters = {};
     $('#filterContainer > .filter-item-clean').each(function() {
@@ -581,14 +579,17 @@ function buildFilters() {
     return filters;
 }
 
-/** Exécute la requête de recherche et affiche les résultats. */
 function executeQuery() {
     currentFilters = buildFilters();
+    const logic = $('input[name="filterLogic"]:checked').val();
+
     $('#resourceDetailsPanel').slideUp();
     $('#resultsPanel').show(); $('#resultsGrid').empty(); $('#loader').removeClass('d-none');
     document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
+    
     $.ajax({
-        url: '/execute_query', type: 'POST', contentType: 'application/json', data: JSON.stringify({ filters: currentFilters }),
+        url: '/execute_query', type: 'POST', contentType: 'application/json', 
+        data: JSON.stringify({ filters: currentFilters, logic: logic }),
         success: function(res) {
             $('#loader').addClass('d-none');
             if(res.success) { currentResults=res.results; lastSparqlQuery=res.query; $('#resultsCount').text(res.count); renderResults(res.results); }
@@ -598,7 +599,6 @@ function executeQuery() {
     });
 }
 
-/** Génère le HTML pour la grille de résultats. */
 function renderResults(res) {
     if(!res.length) { $('#resultsGrid').html('<div class="col-12 text-center py-5 text-muted">Aucun résultat trouvé</div>'); return; }
     $('#resultsGrid').html(res.map(r => {
@@ -609,7 +609,6 @@ function renderResults(res) {
     }).join(''));
 }
 
-/** Ouvre le panneau latéral avec les détails d'une ressource. */
 function openOffcanvas(uri, title) {
     $('#offcanvasLabel').text(title); 
     $('#fullPageBtn').attr('href', `/update_resource/${encodeURIComponent(uri)}`);
@@ -641,7 +640,6 @@ function openOffcanvas(uri, title) {
     });
 }
 
-/** Exporte les résultats actuels au format demandé. */
 function exportData(format) {
     fetch(`/export/${format}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({results:currentResults}) })
     .then(r=>r.blob()).then(b=>{ const l=document.createElement('a'); l.href=window.URL.createObjectURL(b); l.download=`export.${format}`; l.click(); });
