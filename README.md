@@ -55,7 +55,7 @@ https://github.com/user-attachments/assets/9acb8744-4f27-4eb1-9ac7-247a2f0c5a7e
 ## 0.5. Export RDF depuis Omeka ou un entrepôt OAI (Optionnel)
 
 - Export depuis Omeka : [repository](https://github.com/nlasolle/omekas2rdf)
-- Export depuis entrepôt OAI : (prochainement) 
+- Export depuis entrepôt OAI : [script](https://github.com/YannisAd/Sematheque/tree/main/script_Export_RDF/OAI_to_rdf)
 
 
 ### 1. Cloner le dépôt
