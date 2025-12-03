@@ -103,13 +103,17 @@
                     <div class="overflow-hidden w-100">
                         <h6 class="card-title" title="{{ result.label }}">{{ result.label }}</h6>
                         {% if result.type %}
-                            <span class="badge bg-light text-secondary border mb-2">{{ result.type }}</span>
+<span class="badge bg-light text-secondary border mb-2">
+  {{ result.type | replace('http://patrimaths.fr/pmo#', '') }}
+</span>
                         {% endif %}
                     </div>
                 </div>
                 
                 <div class="mt-auto pt-3 border-top">
-                    <small class="card-uri mb-2">{{ r_uri }}</small>
+<small class="card-uri mb-2 text-truncate" style="max-width: 200px; display: inline-block;">
+  {{ r_uri }}
+</small>
                     <div class="text-end">
                         <span class="small text-primary fw-bold">
                             Voir détails <i class="fas fa-chevron-right ms-1"></i>
