@@ -13,7 +13,8 @@ import pandas as pd
 
 from Constants import (
     CONFIG, UI_CONFIG, PROJECT_INFO, SPARQL_KEYWORDS, 
-    QUICK_INSERT_PREFIXES, QUICK_INSERT_CLASSES, QUERY_TEMPLATES
+    QUICK_INSERT_PREFIXES, QUICK_INSERT_CLASSES, QUERY_TEMPLATES,
+    RESOURCE_TYPES
 )
 from sparql_queries import (
     get_classes, query_sparql, get_resources_by_type, search_resources,
@@ -166,15 +167,25 @@ def filter_results():
         if not query_text:
             return redirect(url_for('search'))
         
-        results_df = search_resources(query_text, limit=500, resource_type=filter_type)
-        all_results = results_df.to_dict('records')
+        results_df = search_resources(query_text, limit=500, resource_type=None)
+        all_results_unfiltered = results_df.to_dict('records')
         
+        all_types = sorted(list(set(r['type'] for r in all_results_unfiltered if r.get('type'))))
+        
+        if filter_type:
+            target_uri = filter_type
+            if RESOURCE_TYPES and filter_type in RESOURCE_TYPES:
+                target_uri = RESOURCE_TYPES[filter_type]
+            
+            all_results = [r for r in all_results_unfiltered if r.get('type') == target_uri]
+        else:
+            all_results = all_results_unfiltered
+            
         total_results = len(all_results)
         total_pages = math.ceil(total_results / per_page) if total_results > 0 else 1
         start = (page - 1) * per_page
         end = start + per_page
         paginated_results = all_results[start:end]
-        all_types = sorted(list(set(r['type'] for r in all_results if r.get('type'))))
         
         return render_template(
             'search_results.html',
@@ -187,7 +198,9 @@ def filter_results():
             total_results=total_results
         )
     except Exception as e:
+        import traceback
         logger.error(f"Erreur filter_results: {e}")
+        logger.error(traceback.format_exc())
         return render_template('search.html', error=str(e))
 
 @app.route('/explore')

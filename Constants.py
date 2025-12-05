@@ -14,7 +14,7 @@ except FileNotFoundError:
         "manual_class_mapping": {}
     }
 
-APP_SETTINGS = CONFIG.get('app_settings', {})
+APP_SETTINGS = CONFIG.get('app_settings') or {}
 
 _eps = APP_SETTINGS.get('endpoints')
 if _eps and isinstance(_eps, list) and len(_eps) > 0:
@@ -27,7 +27,7 @@ SPARQL_ENDPOINT_ACCESS = ENDPOINTS[0]['url'] if ENDPOINTS else ""
 
 MAIN_NAMESPACE = APP_SETTINGS.get('main_namespace_uri', '')
 
-PREFIXES = CONFIG.get('prefixes', {})
+PREFIXES = CONFIG.get('prefixes') or {}
 
 CUSTOM_PREFIX = ""
 if "xsd" not in PREFIXES: CUSTOM_PREFIX += "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n"
@@ -37,11 +37,11 @@ if "rdfs" not in PREFIXES: CUSTOM_PREFIX += "PREFIX rdfs: <http://www.w3.org/200
 for prefix, uri in PREFIXES.items():
     CUSTOM_PREFIX += f"PREFIX {prefix}: <{uri}>\n"
 
-VISUALIZATION = CONFIG.get('visualization', {})
-HIDDEN_PROPERTIES = VISUALIZATION.get('hidden_properties', [])
-LABEL_PROPERTIES = VISUALIZATION.get('label_properties', ["http://www.w3.org/2000/01/rdf-schema#label"])
+VISUALIZATION = CONFIG.get('visualization') or {}
+HIDDEN_PROPERTIES = VISUALIZATION.get('hidden_properties') or []
+LABEL_PROPERTIES = VISUALIZATION.get('label_properties') or ["http://www.w3.org/2000/01/rdf-schema#label"]
 
-MANUAL_CLASSES = CONFIG.get('manual_class_mapping', {})
+MANUAL_CLASSES = CONFIG.get('manual_class_mapping') or {}
 RESOURCE_TYPES = MANUAL_CLASSES 
 
 PROJECT_INFO = {

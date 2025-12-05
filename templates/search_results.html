@@ -87,10 +87,10 @@
             {% set r_type = result.type|default('') %}
             {% set r_uri = result.subject|default(result.uri)|default('') %}
             
-            {% if 'Person' in r_type or 'Person' in r_uri %} {% set icon = 'fa-user' %} {% endif %}
-            {% if 'Book' in r_type or 'Ouvrage' in r_uri %} {% set icon = 'fa-book' %} {% endif %}
-            {% if 'Article' in r_type %} {% set icon = 'fa-file-alt' %} {% endif %}
-            {% if 'Bibliotheque' in r_type %} {% set icon = 'fa-building' %} {% endif %}
+            {% if r_type and 'Person' in r_type or r_uri and 'Person' in r_uri %} {% set icon = 'fa-user' %} {% endif %}
+            {% if r_type and 'Book' in r_type or r_uri and 'Ouvrage' in r_uri %} {% set icon = 'fa-book' %} {% endif %}
+            {% if r_type and 'Article' in r_type %} {% set icon = 'fa-file-alt' %} {% endif %}
+            {% if r_type and 'Bibliotheque' in r_type %} {% set icon = 'fa-building' %} {% endif %}
 
             <div class="result-card shadow-sm" 
                  data-bs-toggle="offcanvas" 

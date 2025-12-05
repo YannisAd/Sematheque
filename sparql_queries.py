@@ -79,7 +79,7 @@ def build_label_selection(subject_var="?s", label_var="?label", suffix=""):
     if not subject_var.startswith('?') and not subject_var.startswith('<'): subject_var = f"?{subject_var}"
     if not label_var.startswith('?'): label_var = f"?{label_var}"
 
-    effective_props = list(LABEL_PROPERTIES)
+    effective_props = list(LABEL_PROPERTIES) if LABEL_PROPERTIES else ["http://www.w3.org/2000/01/rdf-schema#label"]
     if "http://www.w3.org/2000/01/rdf-schema#label" not in effective_props:
         effective_props.append("http://www.w3.org/2000/01/rdf-schema#label")
 
@@ -367,9 +367,16 @@ def get_bulk_details(uris):
 def search_resources(text, limit=20, resource_type=None):
     safe_text = text.replace('"', '\\"')
     limit = min(limit, 50)
-    tf = f"?subject a <{RESOURCE_TYPES[resource_type]}> ." if resource_type and resource_type in RESOURCE_TYPES else ""
+    
+    type_filter = ""
+    if resource_type:
+        if RESOURCE_TYPES and resource_type in RESOURCE_TYPES:
+             type_filter = f"?subject a <{RESOURCE_TYPES[resource_type]}> ."
+        elif str(resource_type).startswith('http'):
+             type_filter = f"?subject a <{resource_type}> ."
+         
     opt_labels, coal_label = build_label_selection("?subject", "?label", "_srch")
-    q = f"""{CUSTOM_PREFIX} SELECT DISTINCT ?subject ?label ?type WHERE {{ {{ SELECT DISTINCT ?subject ?label WHERE {{ ?subject rdfs:label ?label . FILTER(CONTAINS(LCASE(?label), LCASE("{safe_text}"))) }} LIMIT {limit} }} {tf} OPTIONAL {{ ?subject a ?type }} BIND(?label as ?finalLabel) }}"""
+    q = f"""{CUSTOM_PREFIX} SELECT DISTINCT ?subject ?label ?type WHERE {{ {{ SELECT DISTINCT ?subject ?label WHERE {{ ?subject rdfs:label ?label . FILTER(CONTAINS(LCASE(?label), LCASE("{safe_text}"))) }} LIMIT {limit} }} {type_filter} OPTIONAL {{ ?subject a ?type }} BIND(?label as ?finalLabel) }}"""
     return execute_raw_query(q)
 
 def get_resource_metadata(uri):
