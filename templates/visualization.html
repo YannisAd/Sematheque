@@ -1,83 +1,201 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sémathèque - Analyse & Visualisation</title>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/standalone/umd/vis-network.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/styles/vis-network.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
-    <style>
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        .config-wizard {
-            background: #ffffff; border-radius: 12px; padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px;
-        }
-        
-        .step-card {
-            background: #fdfdfd; border: 1px solid #e0e0e0; border-radius: 8px;
-            padding: 20px; height: 100%;
-        }
-        
-        .step-header {
-            font-size: 1.25rem; font-weight: 600; color: #0d6efd;
-            margin-bottom: 16px; display: flex; align-items: center; 
-        }
-        
-        .step-number {
-            background: #0d6efd; color: white; border-radius: 50%;
-            width: 30px; height: 30px; display: inline-flex;
-            align-items: center; justify-content: center; font-size: 1rem; margin-right: 12px;
-        }
-        
-        .btn-chart-option {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 12px; border: 2px solid #ddd; border-radius: 8px;
-            transition: all 0.2s ease; height: 100%; font-size: 0.9rem; text-align: center;
-        }
-        
-        .btn-chart-option:hover { border-color: #0d6efd; background: #f0f6ff; }
-        .btn-chart-option.active-chart {
-            border-color: #0d6efd; background: #e7f1ff; color: #0d6efd;
-            font-weight: 600; box-shadow: 0 2px 4px rgba(13,110,253,0.2);
-        }
-        
-        .chart-container { position: relative; height: 500px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; }
-        #network-graph-container { position: relative; height: 600px; background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; }
 
-        .nav-tabs .nav-link { font-weight: 500; }
-        .loading { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.8); z-index: 10; }
-        
-        .stat-card { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); height: 100%; border-left: 4px solid #0d6efd; }
-        .stat-value { font-size: 2rem; font-weight: 700; color: #212529; }
-        .stat-label { color: #6c757d; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .metric-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-        .metric-row:last-child { border-bottom: none; }
-        .metric-val { font-weight: 600; font-family: monospace; }
-        
-        #chartPlaceholder, #networkPlaceholder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; color: #6c757d; position: absolute; top: 0; left: 0; }
-        #chartPlaceholder i, #networkPlaceholder i { font-size: 4rem; margin-bottom: 20px; color: #ced4da; }
+    <style>
+        body {
+            background-color: #f4f7f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .config-wizard {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 24px;
+        }
+
+        .step-card {
+            background: #fdfdfd;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .step-header {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0d6efd;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-number {
+            background: #0d6efd;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            margin-right: 12px;
+        }
+
+        .btn-chart-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            height: 100%;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .btn-chart-option:hover {
+            border-color: #0d6efd;
+            background: #f0f6ff;
+        }
+
+        .btn-chart-option.active-chart {
+            border-color: #0d6efd;
+            background: #e7f1ff;
+            color: #0d6efd;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 500px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        #network-graph-container {
+            position: relative;
+            height: 600px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+        }
+
+        .nav-tabs .nav-link {
+            font-weight: 500;
+        }
+
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 10;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            border-left: 4px solid #0d6efd;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-val {
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        #chartPlaceholder,
+        #networkPlaceholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            color: #6c757d;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #chartPlaceholder i,
+        #networkPlaceholder i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #ced4da;
+        }
     </style>
 </head>
+
 <body>
     <div class="container-fluid py-4">
-        
+
         <div id="errorContainer"></div>
 
         <ul class="nav nav-tabs" id="viewTabs" role="tablist">
-            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#chart-pane"><i class="fas fa-chart-bar me-2"></i>Graphique</button></li>
-            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#network-pane"><i class="fas fa-project-diagram me-2"></i>Réseau</button></li>
-            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#stats-pane"><i class="fas fa-microscope me-2"></i>Analyse de Corpus</button></li>
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#chart-pane"><i
+                        class="fas fa-chart-bar me-2"></i>Graphique</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#network-pane"><i
+                        class="fas fa-project-diagram me-2"></i>Réseau</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#stats-pane"><i
+                        class="fas fa-microscope me-2"></i>Analyse de Corpus</button></li>
         </ul>
-        
+
         <div class="tab-content" id="viewTabsContent">
-            
+
             <div class="tab-pane fade show active" id="chart-pane">
                 <div class="config-wizard mt-3">
                     <div class="row g-3">
@@ -86,11 +204,15 @@
                                 <h5 class="step-header"><span class="step-number">1</span> Quoi mesurer ?</h5>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Axe X</label>
-                                    <select id="columnX" class="form-select"><option value="">Sélectionner...</option></select>
+                                    <select id="columnX" class="form-select">
+                                        <option value="">Sélectionner...</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Segmentation</label>
-                                    <select id="groupByColumn" class="form-select"><option value="">Aucune</option></select>
+                                    <select id="groupByColumn" class="form-select">
+                                        <option value="">Aucune</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Calcul (Axe Y)</label>
@@ -102,29 +224,45 @@
                                 </div>
                                 <div class="mb-3" id="mesureColumnSection" style="display: none;">
                                     <label class="form-label">Propriété calculée</label>
-                                    <select id="mesureColumn" class="form-select"><option value="">Sélectionner...</option></select>
+                                    <select id="mesureColumn" class="form-select">
+                                        <option value="">Sélectionner...</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-lg-7">
                             <div class="step-card">
                                 <h5 class="step-header"><span class="step-number">2</span> Apparence</h5>
                                 <div class="row">
                                     <div class="col-md-7">
                                         <div class="row g-2">
-                                            <div class="col-4"><button class="btn btn-chart-option w-100 active-chart" data-chart="bar"><i class="fas fa-chart-bar"></i>Barres</button></div>
-                                            <div class="col-4"><button class="btn btn-chart-option w-100" data-chart="line"><i class="fas fa-chart-line"></i>Lignes</button></div>
-                                            <div class="col-4"><button class="btn btn-chart-option w-100" data-chart="pie"><i class="fas fa-chart-pie"></i>Pie</button></div>
-                                            <div class="col-4"><button class="btn btn-chart-option w-100" data-chart="doughnut"><i class="fas fa-circle-notch"></i>Donut</button></div>
-                                            <div class="col-4"><button class="btn btn-chart-option w-100" data-chart="radar"><i class="fas fa-spider"></i>Radar</button></div>
-                                            <div class="col-4"><button class="btn btn-chart-option w-100" data-chart="scatter"><i class="fas fa-braille"></i>Points</button></div>
+                                            <div class="col-4"><button class="btn btn-chart-option w-100 active-chart"
+                                                    data-chart="bar"><i class="fas fa-chart-bar"></i>Barres</button>
+                                            </div>
+                                            <div class="col-4"><button class="btn btn-chart-option w-100"
+                                                    data-chart="line"><i class="fas fa-chart-line"></i>Lignes</button>
+                                            </div>
+                                            <div class="col-4"><button class="btn btn-chart-option w-100"
+                                                    data-chart="pie"><i class="fas fa-chart-pie"></i>Pie</button></div>
+                                            <div class="col-4"><button class="btn btn-chart-option w-100"
+                                                    data-chart="doughnut"><i
+                                                        class="fas fa-circle-notch"></i>Donut</button></div>
+                                            <div class="col-4"><button class="btn btn-chart-option w-100"
+                                                    data-chart="radar"><i class="fas fa-spider"></i>Radar</button></div>
+                                            <div class="col-4"><button class="btn btn-chart-option w-100"
+                                                    data-chart="scatter"><i class="fas fa-braille"></i>Points</button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-5">
                                         <div id="stackingOptions" class="mb-2" style="display: none;">
-                                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="stackMode" value="group" checked><label class="form-check-label">Groupé</label></div>
-                                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="stackMode" value="stack"><label class="form-check-label">Empilé</label></div>
+                                            <div class="form-check form-check-inline"><input class="form-check-input"
+                                                    type="radio" name="stackMode" value="group" checked><label
+                                                    class="form-check-label">Groupé</label></div>
+                                            <div class="form-check form-check-inline"><input class="form-check-input"
+                                                    type="radio" name="stackMode" value="stack"><label
+                                                    class="form-check-label">Empilé</label></div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Tri</label>
@@ -148,54 +286,73 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row mt-3">
+                                    <div
+                                        class="col-12 d-flex justify-content-between align-items-center bg-white p-3 rounded shadow-sm">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fw-bold me-3">Options Données :</span>
+                                            <div class="form-check form-check-inline mb-0">
+                                                <input class="form-check-input" type="radio" name="groupingMode"
+                                                    id="groupModeSeparate" value="separate" checked>
+                                                <label class="form-check-label" for="groupModeSeparate">Valeurs
+                                                    distinctes</label>
+                                            </div>
+                                            <div class="form-check form-check-inline mb-0">
+                                                <input class="form-check-input" type="radio" name="groupingMode"
+                                                    id="groupModeGroup" value="group">
+                                                <label class="form-check-label" for="groupModeGroup">Groupes
+                                                    combinés</label>
+                                            </div>
+                                            <div class="form-check form-switch mb-0 ms-3">
+                                                <input class="form-check-input" type="checkbox" id="ignoreEmptyValues"
+                                                    checked>
+                                                <label class="form-check-label" for="ignoreEmptyValues">Ignorer
+                                                    vides</label>
+                                            </div>
+                                            <div class="input-group input-group-sm ms-3" style="width: 200px;"
+                                                id="intervalSection">
+                                                <span class="input-group-text">Intervalle X</span>
+                                                <input type="number" id="intervalSize" class="form-control"
+                                                    placeholder="Auto">
+                                            </div>
+                                        </div>
+                                        <button id="generateChart" class="btn btn-success"><i
+                                                class="fas fa-play me-2"></i>Générer</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="row mt-3">
-                        <div class="col-12 d-flex justify-content-between align-items-center bg-white p-3 rounded shadow-sm">
-                             <div class="d-flex align-items-center">
-                                <span class="fw-bold me-3">Options Données :</span>
-                                <div class="form-check form-check-inline mb-0">
-                                    <input class="form-check-input" type="radio" name="groupingMode" id="groupModeSeparate" value="separate" checked>
-                                    <label class="form-check-label" for="groupModeSeparate">Valeurs distinctes</label>
-                                </div>
-                                <div class="form-check form-check-inline mb-0">
-                                    <input class="form-check-input" type="radio" name="groupingMode" id="groupModeGroup" value="group">
-                                    <label class="form-check-label" for="groupModeGroup">Groupes combinés</label>
-                                </div>
-                                <div class="form-check form-switch mb-0 ms-3">
-                                    <input class="form-check-input" type="checkbox" id="ignoreEmptyValues" checked>
-                                    <label class="form-check-label" for="ignoreEmptyValues">Ignorer vides</label>
-                                </div>
-                                <div class="input-group input-group-sm ms-3" style="width: 200px;" id="intervalSection">
-                                    <span class="input-group-text">Intervalle X</span>
-                                    <input type="number" id="intervalSize" class="form-control" placeholder="Auto">
-                                </div>
-                             </div>
-                             <button id="generateChart" class="btn btn-success"><i class="fas fa-play me-2"></i>Générer</button>
-                        </div>
-                    </div>
+
+
                 </div>
 
                 <div class="chart-container mt-3">
                     <canvas id="mainChart"></canvas>
-                    <div id="chartLoading" class="loading" style="display: none;"><div class="spinner-border text-primary"></div></div>
-                    <div id="chartPlaceholder"><i class="fas fa-chart-area"></i><p>Configurez et générez le graphique</p></div>
+                    <div id="chartLoading" class="loading" style="display: none;">
+                        <div class="spinner-border text-primary"></div>
+                    </div>
+                    <div id="chartPlaceholder"><i class="fas fa-chart-area"></i>
+                        <p>Configurez et générez le graphique</p>
+                    </div>
                 </div>
             </div>
-            
+
             <div class="tab-pane fade" id="network-pane">
                 <div class="card mt-3 mb-3 border-0 shadow-sm">
                     <div class="card-body bg-white rounded">
                         <div class="row align-items-end g-3">
                             <div class="col-md-5">
                                 <label class="fw-bold small text-muted">SOURCE</label>
-                                <select id="nodeSource" class="form-select"><option value="">Choisir...</option></select>
+                                <select id="nodeSource" class="form-select">
+                                    <option value="">Choisir...</option>
+                                </select>
                             </div>
                             <div class="col-md-5">
                                 <label class="fw-bold small text-muted">CIBLE</label>
-                                <select id="nodeTarget" class="form-select"><option value="">Choisir...</option></select>
+                                <select id="nodeTarget" class="form-select">
+                                    <option value="">Choisir...</option>
+                                </select>
                             </div>
                             <div class="col-md-2">
                                 <button id="generateNetworkButton" class="btn btn-primary w-100">Générer</button>
@@ -205,8 +362,12 @@
                 </div>
 
                 <div id="network-graph-container">
-                    <div id="networkLoading" class="loading" style="display: none;"><div class="spinner-border text-primary"></div></div>
-                    <div id="networkPlaceholder"><i class="fas fa-project-diagram"></i><p>Sélectionnez source et cible</p></div>
+                    <div id="networkLoading" class="loading" style="display: none;">
+                        <div class="spinner-border text-primary"></div>
+                    </div>
+                    <div id="networkPlaceholder"><i class="fas fa-project-diagram"></i>
+                        <p>Sélectionnez source et cible</p>
+                    </div>
                 </div>
             </div>
 
@@ -257,7 +418,7 @@
                     </div>
 
                     <div class="col-lg-6">
-                         <div class="card h-100 shadow-sm border-0">
+                        <div class="card h-100 shadow-sm border-0">
                             <div class="card-header bg-white fw-bold">
                                 <i class="fas fa-search-plus me-2"></i>Analyse Détaillée
                             </div>
@@ -265,7 +426,7 @@
                                 <select id="statsPropertySelector" class="form-select mb-3">
                                     <option value="">Choisir une propriété à analyser...</option>
                                 </select>
-                                
+
                                 <div id="statsDetailContainer" style="display:none;">
                                     <div class="row mb-3">
                                         <div class="col-6">
@@ -283,27 +444,33 @@
                                     </div>
 
                                     <div id="numeric-stats-block" class="mb-3" style="display:none;">
-                                        <div class="metric-row"><span>Min</span><span class="metric-val" id="n-min"></span></div>
-                                        <div class="metric-row"><span>Max</span><span class="metric-val" id="n-max"></span></div>
-                                        <div class="metric-row"><span>Moyenne</span><span class="metric-val" id="n-avg"></span></div>
-                                        <div class="metric-row"><span>Médiane</span><span class="metric-val" id="n-med"></span></div>
-                                        <div class="metric-row"><span>Écart Type</span><span class="metric-val" id="n-std"></span></div>
+                                        <div class="metric-row"><span>Min</span><span class="metric-val"
+                                                id="n-min"></span></div>
+                                        <div class="metric-row"><span>Max</span><span class="metric-val"
+                                                id="n-max"></span></div>
+                                        <div class="metric-row"><span>Moyenne</span><span class="metric-val"
+                                                id="n-avg"></span></div>
+                                        <div class="metric-row"><span>Médiane</span><span class="metric-val"
+                                                id="n-med"></span></div>
+                                        <div class="metric-row"><span>Écart Type</span><span class="metric-val"
+                                                id="n-std"></span></div>
                                     </div>
 
                                     <div id="text-stats-block" class="mb-3" style="display:none;">
-                                        <div class="metric-row"><span>Valeurs Uniques (Cardinalité)</span><span class="metric-val" id="t-unique"></span></div>
+                                        <div class="metric-row"><span>Valeurs Uniques (Cardinalité)</span><span
+                                                class="metric-val" id="t-unique"></span></div>
                                         <div class="metric-row">
                                             <span>
-                                                Ratio Diversité 
-                                                <i class="fas fa-info-circle text-muted ms-1" 
-                                                   data-bs-toggle="tooltip" 
-                                                   data-bs-placement="top" 
-                                                   title="Indique la variété du vocabulaire.&#010;Proche de 0 : Valeurs répétitives (ex: catégories).&#010;Proche de 1 : Valeurs uniques (ex: identifiants).">
+                                                Ratio Diversité
+                                                <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    title="Indique la variété du vocabulaire.&#010;Proche de 0 : Valeurs répétitives (ex: catégories).&#010;Proche de 1 : Valeurs uniques (ex: identifiants).">
                                                 </i>
                                             </span>
                                             <span class="metric-val" id="t-ratio"></span>
                                         </div>
-                                        <div class="metric-row"><span>Mode (Top valeur)</span><span class="metric-val" id="t-mode"></span></div>
+                                        <div class="metric-row"><span>Mode (Top valeur)</span><span class="metric-val"
+                                                id="t-mode"></span></div>
                                     </div>
 
                                     <h6 class="mt-4 border-bottom pb-2">Distribution (Top 15)</h6>
@@ -311,7 +478,7 @@
                                         <canvas id="distributionChart"></canvas>
                                     </div>
                                 </div>
-                                
+
                                 <div id="statsPlaceholder" class="text-center text-muted mt-5">
                                     <i class="fas fa-arrow-up mb-2"></i><br>Sélectionnez une propriété
                                 </div>
@@ -338,16 +505,17 @@
          */
         function initializeData() {
             try {
-                const initialData = {% if initial_data %}{{ initial_data|safe }}{% else %}[]{% endif %};
-                originalData = Array.isArray(initialData) ? initialData : [];
-                if (originalData.length > 0) {
-                    processAllData();
-                    generateDashboard();
-                    updateChartOptions();
-                } else {
-                     document.getElementById('generalStats').innerHTML = "Aucune donnée disponible.";
-                }
-            } catch (e) { console.error(e); alert("Erreur chargement: " + e.message); }
+                const initialData = {{ initial_data | tojson
+            }};
+        originalData = Array.isArray(initialData) ? initialData : [];
+        if (originalData.length > 0) {
+            processAllData();
+            generateDashboard();
+            updateChartOptions();
+        } else {
+            document.getElementById('generalStats').innerHTML = "Aucune donnée disponible.";
+        }
+        } catch (e) { console.error(e); alert("Erreur chargement: " + e.message); }
         }
 
         /**
@@ -355,17 +523,17 @@
          */
         function processAllData() {
             const groupMode = document.querySelector('input[name="groupingMode"]:checked')?.value || 'separate';
-            
+
             processedData = originalData.map(item => {
                 const clean = {};
                 if (item.SubjectURI) clean['URI'] = item.SubjectURI;
-                
-                const props = item.properties || []; 
+
+                const props = item.properties || [];
                 if (props.length) {
                     props.forEach(p => addVal(clean, formatProp(p.propertyLabel), p.valueLabel, groupMode));
                 } else {
                     Object.entries(item).forEach(([k, v]) => {
-                        if (!['URI','SubjectURI','properties'].includes(k)) addVal(clean, k, v, groupMode);
+                        if (!['URI', 'SubjectURI', 'properties'].includes(k)) addVal(clean, k, v, groupMode);
                     });
                 }
                 return clean;
@@ -374,7 +542,7 @@
             const cols = new Set();
             processedData.forEach(d => Object.keys(d).forEach(k => cols.add(k)));
             availableColumns = Array.from(cols).sort().filter(c => c !== 'URI');
-            
+
             populateSelects();
         }
 
@@ -394,29 +562,41 @@
                 const mType = document.getElementById('mesureType').value;
                 const mCol = document.getElementById('mesureColumn').value;
                 const sortOrder = document.getElementById('sortOrder').value;
+                const intervalSize = parseFloat(document.getElementById('intervalSize').value);
+                const isIntervalMode = !isNaN(intervalSize) && intervalSize > 0;
+
                 const limit = parseInt(document.getElementById('limitItems').value);
                 const isStacked = document.querySelector('input[name="stackMode"]:checked')?.value === 'stack';
                 const ignoreEmpty = document.getElementById('ignoreEmptyValues')?.checked ?? true;
-                
+
                 const dataMap = {};
                 const labelsSet = new Set();
-                
+
                 processedData.forEach(item => {
                     const xs = getArr(item[cx]);
                     const gs = cg ? getArr(item[cg]) : ['Total'];
-                    
+
                     if (ignoreEmpty && xs.length === 0) return;
 
                     let val = 1;
-                    if (['sum','avg'].includes(mType) && mCol) val = parseFloat(item[mCol]) || 0;
+                    if (['sum', 'avg'].includes(mType) && mCol) val = parseFloat(item[mCol]) || 0;
 
                     xs.forEach(x => {
-                        labelsSet.add(x);
+                        let xLabel = x;
+                        if (isIntervalMode) {
+                            const numX = parseFloat(x);
+                            if (!isNaN(numX)) {
+                                const bin = Math.floor(numX / intervalSize) * intervalSize;
+                                xLabel = `[${bin} - ${bin + intervalSize}[`;
+                            }
+                        }
+
+                        labelsSet.add(xLabel);
                         gs.forEach(g => {
                             if (!dataMap[g]) dataMap[g] = {};
-                            if (!dataMap[g][x]) dataMap[g][x] = { sum:0, count:0 };
-                            dataMap[g][x].sum += val;
-                            dataMap[g][x].count++;
+                            if (!dataMap[g][xLabel]) dataMap[g][xLabel] = { sum: 0, count: 0 };
+                            dataMap[g][xLabel].sum += val;
+                            dataMap[g][xLabel].count++;
                         });
                     });
                 });
@@ -430,20 +610,20 @@
                         Object.keys(dataMap).forEach(g => {
                             const d = dataMap[g][l];
                             if (d) {
-                                if (mType === 'avg') t += (d.count ? d.sum/d.count : 0);
+                                if (mType === 'avg') t += (d.count ? d.sum / d.count : 0);
                                 else if (mType === 'sum') t += d.sum;
                                 else t += d.count;
                             }
                         });
                         totals[l] = t;
                     });
-                    
+
                     sortedLabels.sort((a, b) => sortOrder === 'value-desc' ? totals[b] - totals[a] : totals[a] - totals[b]);
                 } else if (sortOrder === 'numeric-asc') {
-                     sortedLabels.sort((a, b) => (parseFloat(a) || 0) - (parseFloat(b) || 0));
+                    sortedLabels.sort((a, b) => (parseFloat(a) || 0) - (parseFloat(b) || 0));
                 } else {
-                     sortedLabels.sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
-                     if (sortOrder === 'label-desc') sortedLabels.reverse();
+                    sortedLabels.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+                    if (sortOrder === 'label-desc') sortedLabels.reverse();
                 }
 
                 if (limit > 0 && sortedLabels.length > limit) {
@@ -455,8 +635,8 @@
                     label: g,
                     data: sortedLabels.map(l => {
                         const d = dataMap[g][l];
-                        if(!d) return 0;
-                        return mType === 'avg' ? (d.count ? d.sum/d.count : 0) : (mType === 'sum' ? d.sum : d.count);
+                        if (!d) return 0;
+                        return mType === 'avg' ? (d.count ? d.sum / d.count : 0) : (mType === 'sum' ? d.sum : d.count);
                     }),
                     backgroundColor: generateColor(i),
                     borderColor: 'rgba(0,0,0,0.1)',
@@ -465,21 +645,21 @@
 
                 const ctx = document.getElementById('mainChart').getContext('2d');
                 if (charts.main) charts.main.destroy();
-                
-                charts.main = new Chart(ctx, { 
-                    type, 
+
+                charts.main = new Chart(ctx, {
+                    type,
                     data: { labels: sortedLabels, datasets },
-                    options: { 
-                        responsive: true, 
+                    options: {
+                        responsive: true,
                         maintainAspectRatio: false,
                         plugins: { legend: { position: 'bottom' } },
-                        scales: (['pie','doughnut','radar'].includes(type)) ? {} : {
+                        scales: (['pie', 'doughnut', 'radar'].includes(type)) ? {} : {
                             x: { stacked: isStacked },
                             y: { stacked: isStacked, beginAtZero: true }
                         }
-                    } 
+                    }
                 });
-                
+
                 showLoad('chartLoading', false);
             }, 50);
         }
@@ -495,7 +675,7 @@
 
             availableColumns.forEach(col => {
                 const values = processedData.flatMap(d => getArr(d[col])).filter(v => v);
-                const count = processedData.filter(d => d[col]).length; 
+                const count = processedData.filter(d => d[col]).length;
                 filledCells += count;
                 totalCells += totalRows;
                 totalUnique += new Set(values).size;
@@ -505,8 +685,8 @@
 
             document.getElementById('kpi-total-items').textContent = totalRows;
             document.getElementById('kpi-total-props').textContent = totalCols;
-            document.getElementById('kpi-fill-rate').textContent = totalCells ? ((filledCells/totalCells)*100).toFixed(1) + '%' : '0%';
-            document.getElementById('kpi-unique-vals').textContent = totalCols ? Math.round(totalUnique/totalCols) : 0;
+            document.getElementById('kpi-fill-rate').textContent = totalCells ? ((filledCells / totalCells) * 100).toFixed(1) + '%' : '0%';
+            document.getElementById('kpi-unique-vals').textContent = totalCols ? Math.round(totalUnique / totalCols) : 0;
             renderQualityChart(completenessData);
         }
 
@@ -516,7 +696,7 @@
         function renderQualityChart(data) {
             const ctx = document.getElementById('qualityChart').getContext('2d');
             if (charts.quality) charts.quality.destroy();
-            const indices = data.data.map((v, i) => ({v, l: data.labels[i]}));
+            const indices = data.data.map((v, i) => ({ v, l: data.labels[i] }));
             indices.sort((a, b) => a.v - b.v);
             charts.quality = new Chart(ctx, {
                 type: 'bar',
@@ -549,24 +729,24 @@
             const total = processedData.length;
             const filledRows = processedData.filter(d => d[prop]).length;
             const isNum = rawValues.length > 0 && rawValues.every(v => !isNaN(parseFloat(v)) && isFinite(v));
-            
+
             document.getElementById('stat-detail-type').textContent = isNum ? "Numérique (Quantitative)" : "Texte (Catégorielle)";
-            document.getElementById('stat-detail-fill').textContent = `${((filledRows/total)*100).toFixed(1)}% (${filledRows}/${total})`;
+            document.getElementById('stat-detail-fill').textContent = `${((filledRows / total) * 100).toFixed(1)}% (${filledRows}/${total})`;
 
             const counts = {};
-            rawValues.forEach(v => counts[v] = (counts[v]||0)+1);
-            const sortedEntries = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+            rawValues.forEach(v => counts[v] = (counts[v] || 0) + 1);
+            const sortedEntries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
 
             if (isNum) {
                 document.getElementById('numeric-stats-block').style.display = 'block';
                 document.getElementById('text-stats-block').style.display = 'none';
-                const nums = rawValues.map(Number).sort((a,b) => a-b);
-                const sum = nums.reduce((a,b)=>a+b, 0);
+                const nums = rawValues.map(Number).sort((a, b) => a - b);
+                const sum = nums.reduce((a, b) => a + b, 0);
                 const avg = sum / nums.length;
-                const med = nums.length % 2 !== 0 ? nums[Math.floor(nums.length/2)] : (nums[nums.length/2 - 1] + nums[nums.length/2]) / 2;
-                const variance = nums.reduce((a,b) => a + Math.pow(b-avg, 2), 0) / nums.length;
+                const med = nums.length % 2 !== 0 ? nums[Math.floor(nums.length / 2)] : (nums[nums.length / 2 - 1] + nums[nums.length / 2]) / 2;
+                const variance = nums.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / nums.length;
                 document.getElementById('n-min').textContent = nums[0];
-                document.getElementById('n-max').textContent = nums[nums.length-1];
+                document.getElementById('n-max').textContent = nums[nums.length - 1];
                 document.getElementById('n-avg').textContent = avg.toFixed(2);
                 document.getElementById('n-med').textContent = med.toFixed(2);
                 document.getElementById('n-std').textContent = Math.sqrt(variance).toFixed(2);
@@ -577,7 +757,7 @@
                 const uniqueCount = sortedEntries.length;
                 const filled = rawValues.length;
                 document.getElementById('t-unique').textContent = uniqueCount;
-                document.getElementById('t-ratio').textContent = (filled > 0 ? (uniqueCount/filled).toFixed(3) : 0);
+                document.getElementById('t-ratio').textContent = (filled > 0 ? (uniqueCount / filled).toFixed(3) : 0);
                 document.getElementById('t-mode').textContent = sortedEntries.length ? `${sortedEntries[0][0]} (${sortedEntries[0][1]})` : "-";
                 renderDistributionChart(sortedEntries.slice(0, 15), 'Top Fréquences');
             }
@@ -589,7 +769,7 @@
             charts.distribution = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: entries.map(e => e[0].length > 15 ? e[0].substring(0,12)+'...' : e[0]),
+                    labels: entries.map(e => e[0].length > 15 ? e[0].substring(0, 12) + '...' : e[0]),
                     datasets: [{
                         label: 'Occurrences',
                         data: entries.map(e => e[1]),
@@ -614,7 +794,7 @@
             setTimeout(() => {
                 const nodeCounts = {}, edges = {}, nodeStats = {};
                 const getStat = (id) => {
-                    if(!nodeStats[id]) nodeStats[id] = {in:0, out:0, total:0};
+                    if (!nodeStats[id]) nodeStats[id] = { in: 0, out: 0, total: 0 };
                     return nodeStats[id];
                 };
 
@@ -622,71 +802,80 @@
                     const srcs = getArr(d[sProp]);
                     const tgts = getArr(d[tProp]);
                     srcs.forEach(s => {
-                        nodeCounts[s] = (nodeCounts[s]||0)+1;
+                        nodeCounts[s] = (nodeCounts[s] || 0) + 1;
                         tgts.forEach(t => {
-                            if (s===t) return;
-                            nodeCounts[t] = (nodeCounts[t]||0)+1;
+                            if (s === t) return;
+                            nodeCounts[t] = (nodeCounts[t] || 0) + 1;
                             getStat(s).out++; getStat(s).total++;
                             getStat(t).in++; getStat(t).total++;
                             const id = `${s}>${t}`;
-                            if(!edges[id]) edges[id] = {from:s, to:t, value:0};
+                            if (!edges[id]) edges[id] = { from: s, to: t, value: 0 };
                             edges[id].value++;
                         });
                     });
                 });
 
                 const nodesData = Object.keys(nodeCounts).map(k => {
-                    const st = nodeStats[k] || {in:0, out:0, total:0};
-                    return { 
-                        id: k, 
-                        label: k, 
-                        value: nodeCounts[k], 
+                    const st = nodeStats[k] || { in: 0, out: 0, total: 0 };
+                    return {
+                        id: k,
+                        label: k,
+                        value: nodeCounts[k],
                         title: `Liens entrants: ${st.in}
                         Liens sortants: ${st.out}
-                        Total: ${st.total}` 
+                        Total: ${st.total}`
                     };
                 });
                 const edgesData = Object.values(edges);
 
                 const container = document.getElementById('network-graph-container');
-                if (charts.network) charts.network.destroy();
-                
-                charts.network = new vis.Network(container, 
-                    { nodes: nodesData, edges: edgesData }, 
-                    { 
-                        nodes: { 
-                            shape: 'dot', 
-                            font: { size: 14, face: 'Tahoma', vadjust: 0 }, 
-                            scaling: { label: { enabled: false } } 
-                        }, 
-                        interaction: { hover: true, tooltipDelay: 200 }, 
-                        physics: { 
+
+                if (charts.network) {
+                    charts.network.destroy();
+                    charts.network = null;
+                }
+                // Also clear container content to be safe
+                while (container.firstChild) {
+                    if (container.firstChild.id === 'networkLoading' || container.firstChild.id === 'networkPlaceholder') break;
+                    container.removeChild(container.firstChild);
+                }
+
+                charts.network = new vis.Network(container,
+                    { nodes: nodesData, edges: edgesData },
+                    {
+                        nodes: {
+                            shape: 'dot',
+                            font: { size: 14, face: 'Tahoma', vadjust: 0 },
+                            scaling: { label: { enabled: false } }
+                        },
+                        interaction: { hover: true, tooltipDelay: 200 },
+                        physics: {
                             stabilization: { iterations: 100 },
                             barnesHut: {
                                 gravitationalConstant: -10000,
                                 springLength: 250,
                                 springConstant: 0.04
                             }
-                        } 
+                        }
                     }
                 );
-                
+
                 showLoad('networkLoading', false);
             }, 50);
         }
 
         function setupEventListeners() {
-            document.querySelectorAll('.btn-chart-option').forEach(b => b.onclick = function() {
-                document.querySelectorAll('.active-chart').forEach(e=>e.classList.remove('active-chart'));
+            document.querySelectorAll('.btn-chart-option').forEach(b => b.onclick = function () {
+                document.querySelectorAll('.active-chart').forEach(e => e.classList.remove('active-chart'));
                 this.classList.add('active-chart');
                 updateChartOptions();
             });
             document.getElementById('generateChart').onclick = generateChart;
             document.getElementById('generateNetworkButton').onclick = generateNetwork;
             document.getElementById('statsPropertySelector').onchange = (e) => analyzeProperty(e.target.value);
-            ['columnX','groupByColumn'].forEach(id => document.getElementById(id).onchange = updateChartOptions);
+            ['columnX', 'groupByColumn'].forEach(id => document.getElementById(id).onchange = updateChartOptions);
             const dataTriggers = ['input[name="groupingMode"]', '#ignoreEmptyValues'];
-            dataTriggers.forEach(sel => document.querySelectorAll(sel).forEach(el => 
+            dataTriggers.forEach(sel => document.querySelectorAll(sel).forEach(el =>
                 el.addEventListener('change', () => { processAllData(); generateDashboard(); })
             ));
             document.querySelectorAll('input[name="stackMode"]').forEach(el => el.addEventListener('change', generateChart));
@@ -695,13 +884,13 @@
         function initTooltips() { [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(el => new bootstrap.Tooltip(el)); }
         function addVal(obj, key, val, mode) {
             if (!val) return;
-            const vals = Array.isArray(val) ? val : String(val).split('|').map(s=>s.trim());
+            const vals = Array.isArray(val) ? val : String(val).split('|').map(s => s.trim());
             const final = mode === 'group' ? vals.join(' | ') : (vals.length === 1 ? vals[0] : vals);
             if (obj[key]) {
                 const existing = Array.isArray(obj[key]) ? obj[key] : [obj[key]];
                 const incoming = Array.isArray(final) ? final : [final];
                 obj[key] = [...existing, ...incoming];
-                if(obj[key].length === 1) obj[key] = obj[key][0];
+                if (obj[key].length === 1) obj[key] = obj[key][0];
             } else {
                 obj[key] = final;
             }
@@ -712,7 +901,7 @@
                 const el = document.getElementById(id);
                 if (!el) return;
                 const old = el.value;
-                el.innerHTML = '<option value="">' + (id==='groupByColumn'?'Aucune':'Sélectionner...') + '</option>';
+                el.innerHTML = '<option value="">' + (id === 'groupByColumn' ? 'Aucune' : 'Sélectionner...') + '</option>';
                 availableColumns.forEach(c => {
                     if (id === 'mesureColumn' && !isNumeric(c)) return;
                     el.innerHTML += `<option value="${c}">${c}</option>`;
@@ -726,15 +915,16 @@
             document.getElementById('intervalSection').style.display = (isBar && isNum) ? 'flex' : 'none';
             document.getElementById('stackingOptions').style.display = (isBar && document.getElementById('groupByColumn').value) ? 'block' : 'none';
         }
-        function getArr(v) { if(!v) return []; return Array.isArray(v) ? v : [String(v)]; }
-        function formatProp(s) { return s.split(/[/#]/).pop().replace(/_/g,' '); }
+        function getArr(v) { if (!v) return []; return Array.isArray(v) ? v : [String(v)]; }
+        function formatProp(s) { return s.split(/[/#]/).pop().replace(/_/g, ' '); }
         function isNumeric(col) {
-            if(!col || !processedData.length) return false;
+            if (!col || !processedData.length) return false;
             const val = processedData.find(d => d[col])?.[col];
             return val && !isNaN(parseFloat(val));
         }
         function showLoad(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
-        function generateColor(i) { const c = ['#0d6efd','#198754','#ffc107','#dc3545','#6610f2']; return c[i % c.length]; }
+        function generateColor(i) { const c = ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6610f2']; return c[i % c.length]; }
     </script>
 </body>
+
 </html>

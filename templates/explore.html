@@ -7,14 +7,14 @@
 <script src="https://unpkg.com/@yaireo/tagify/dist/tagify.min.js"></script>
 
 <style>
-    .sidebar-header .select2-container { 
-        width: 100% !important; 
+    .sidebar-header .select2-container {
+        width: 100% !important;
         max-width: 100%;
     }
 
-    .select2-selection { 
-        border-color: #dee2e6 !important; 
-        height: 31px; 
+    .select2-selection {
+        border-color: #dee2e6 !important;
+        height: 31px;
         display: flex !important;
         align-items: center;
     }
@@ -29,65 +29,105 @@
     .sidebar-clean {
         background: #fff;
         border-right: 1px solid #e2e8f0;
-        height: calc(100vh - 80px); 
+        height: calc(100vh - 80px);
         position: sticky;
         top: 80px;
         display: flex;
         flex-direction: column;
         z-index: 900;
-        box-shadow: 4px 0 24px rgba(0,0,0,0.02);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
         overflow: hidden;
     }
 
-    .sidebar-header { 
-        padding: 1.25rem; 
-        border-bottom: 1px solid #f1f5f9; 
+    .sidebar-header {
+        padding: 1.25rem;
+        border-bottom: 1px solid #f1f5f9;
         background: #fff;
         flex-shrink: 0;
     }
-    
-    .sidebar-content { 
-        flex: 1; 
+
+    .sidebar-content {
+        flex: 1;
         overflow-y: auto;
         overflow-x: hidden;
-        padding: 1rem; 
+        padding: 1rem;
         scrollbar-width: thin;
         scrollbar-color: #dee2e6 #fff;
     }
 
-    .sidebar-footer { 
-        padding: 1rem; 
-        border-top: 1px solid #f1f5f9; 
-        background: #fff; 
+    .sidebar-footer {
+        padding: 1rem;
+        border-top: 1px solid #f1f5f9;
+        background: #fff;
         flex-shrink: 0;
     }
 
     @media (max-width: 768px) {
-        .sidebar-clean { 
-            position: relative; 
+        .sidebar-clean {
+            position: relative;
             height: auto;
             max-height: 500px;
-            top: 0; 
-            border-right: none; 
+            top: 0;
+            border-right: none;
             border-bottom: 1px solid #e2e8f0;
-            z-index: 10; 
+            z-index: 10;
         }
     }
 
-    .select2-container { width: 100% !important; }
-    .select2-selection { border-color: #dee2e6 !important; }
+    .select2-container {
+        width: 100% !important;
+    }
+
+    .select2-selection {
+        border-color: #dee2e6 !important;
+    }
 
     .filter-item-clean {
-        background: white; border: 1px solid #e2e8f0; border-left: 3px solid #0d6efd;
-        border-radius: 8px; margin-bottom: 12px; padding: 12px;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-left: 3px solid #0d6efd;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        padding: 12px;
         position: relative;
     }
-    .nested-filter-container { margin-top: 8px; padding-left: 12px; border-left: 2px dashed #dee2e6; }
-    .filter-item-clean[data-level="1"] { background: #f8fafc; border-left-color: #6c757d; font-size: 0.95em; margin-bottom: 8px; border-top: 1px solid #eee; }
-    
-    .filter-controls { display: flex; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
-    .filter-operator { width: auto; min-width: 90px; font-weight: 600; color: #0d6efd; background-color: #f8f9fa; border: 1px solid #dee2e6; font-size: 0.85rem; }
-    .tagify.form-control { padding: 3px 6px; border-radius: 4px; flex-grow: 1; }
+
+    .nested-filter-container {
+        margin-top: 8px;
+        padding-left: 12px;
+        border-left: 2px dashed #dee2e6;
+    }
+
+    .filter-item-clean[data-level="1"] {
+        background: #f8fafc;
+        border-left-color: #6c757d;
+        font-size: 0.95em;
+        margin-bottom: 8px;
+        border-top: 1px solid #eee;
+    }
+
+    .filter-controls {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 6px;
+        flex-wrap: wrap;
+    }
+
+    .filter-operator {
+        width: auto;
+        min-width: 90px;
+        font-weight: 600;
+        color: #0d6efd;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        font-size: 0.85rem;
+    }
+
+    .tagify.form-control {
+        padding: 3px 6px;
+        border-radius: 4px;
+        flex-grow: 1;
+    }
 
     .tagify__tag.unwanted-item {
         --tag-bg: rgba(255, 91, 91, 0.2);
@@ -96,55 +136,136 @@
     }
 
     .initial-resource-card {
-        border: none; border-radius: 12px; background: #fff;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.04); margin-bottom: 2rem; overflow: hidden; border: 1px solid #f0f0f0;
+        border: none;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        border: 1px solid #f0f0f0;
     }
-    .initial-header { background: linear-gradient(to right, #f8f9fa, #ffffff); padding: 1.25rem 1.5rem; border-bottom: 1px solid #f0f0f0; }
 
-    .result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-    
+    .initial-header {
+        background: linear-gradient(to right, #f8f9fa, #ffffff);
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .result-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
     .result-card {
-        background: white; border: 1px solid #f1f5f9; border-radius: 12px; padding: 1.5rem;
-        transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; height: 100%; 
-        min-height: 120px; display: flex; flex-direction: column; position: relative;
+        background: white;
+        border: 1px solid #f1f5f9;
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+        height: 100%;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
     }
-    .result-card:hover { transform: translateY(-4px); box-shadow: 0 12px 35px rgba(0,0,0,0.08); border-color: #0d6efd; }
-    
+
+    .result-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+        border-color: #0d6efd;
+    }
+
     .result-card .card-icon {
-        width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        background: #f8f9fa; border-radius: 10px; color: #0d6efd; margin-right: 1rem; font-size: 1.2rem;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: #f8f9fa;
+        border-radius: 10px;
+        color: #0d6efd;
+        margin-right: 1rem;
+        font-size: 1.2rem;
     }
 
-    .offcanvas-end { border: none; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
-    #resourceOffcanvas { width: 600px; max-width: 90vw; }
-    
-    .detail-row { padding: 0.75rem 1rem; border-bottom: 1px solid #f1f5f9; }
-    .detail-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #6c757d; width: 30%; padding-right: 1rem; word-break: break-word; }
-    .detail-values { width: 70%; }
-    .detail-value-item { margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
-    .btn-add-filter-xs { opacity: 0.6; padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; margin-left: 6px; }
-    .detail-value-item:hover .btn-add-filter-xs { opacity: 1; background-color: #e9ecef; color: #0d6efd; }
+    .offcanvas-end {
+        border: none;
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+    }
 
-    .nested-popover-content { padding: 10px; min-width: 250px; }
+    #resourceOffcanvas {
+        width: 600px;
+        max-width: 90vw;
+    }
+
+    .detail-row {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .detail-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #6c757d;
+        width: 30%;
+        padding-right: 1rem;
+        word-break: break-word;
+    }
+
+    .detail-values {
+        width: 70%;
+    }
+
+    .detail-value-item {
+        margin-bottom: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-add-filter-xs {
+        opacity: 0.6;
+        padding: 2px 6px;
+        font-size: 0.7rem;
+        border-radius: 4px;
+        margin-left: 6px;
+    }
+
+    .detail-value-item:hover .btn-add-filter-xs {
+        opacity: 1;
+        background-color: #e9ecef;
+        color: #0d6efd;
+    }
+
+    .nested-popover-content {
+        padding: 10px;
+        min-width: 250px;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid p-0">
     <div class="row g-0">
-        
+
         <div class="col-12 col-md-3 col-lg-2 sidebar-clean">
             <div class="sidebar-header">
                 <h6 class="fw-bold mb-2 text-uppercase text-muted small ls-1">Ajouter un critère</h6>
-                
+
                 <div class="d-flex align-items-center justify-content-between mb-3 bg-light p-2 rounded border">
                     <span class="small fw-bold text-secondary">Logique :</span>
                     <div class="btn-group btn-group-sm" role="group">
                         <input type="radio" class="btn-check" name="filterLogic" id="logicAND" value="AND" checked>
-                        <label class="btn btn-outline-primary fw-bold" for="logicAND" title="Tous les critères doivent être remplis">ET</label>
-                        
+                        <label class="btn btn-outline-primary fw-bold" for="logicAND"
+                            title="Tous les critères doivent être remplis">ET</label>
+
                         <input type="radio" class="btn-check" name="filterLogic" id="logicOR" value="OR">
-                        <label class="btn btn-outline-primary fw-bold" for="logicOR" title="Au moins un critère doit être rempli">OU</label>
+                        <label class="btn btn-outline-primary fw-bold" for="logicOR"
+                            title="Au moins un critère doit être rempli">OU</label>
                     </div>
                 </div>
 
@@ -166,10 +287,11 @@
             </div>
             <div class="sidebar-footer">
                 <div class="d-grid gap-2">
-                    <button id="executeQueryBtn" class="btn btn-success fw-bold shadow-sm py-2 text-uppercase ls-1" style="font-size: 0.8rem;">
+                    <button id="executeQueryBtn" class="btn btn-success fw-bold shadow-sm py-2 text-uppercase ls-1"
+                        style="font-size: 0.8rem;">
                         <i class="fas fa-search me-2"></i> Rechercher
                     </button>
-                    <button id="clearAllFiltersBtn" class="btn btn-light btn-sm text-danger">
+                    <button id="clearAllFiltersBtn" type="button" class="btn btn-light btn-sm text-danger">
                         <i class="fas fa-trash-alt me-1"></i> Tout effacer
                     </button>
                 </div>
@@ -178,29 +300,37 @@
 
         <div class="col-12 col-md-9 col-lg-10 bg-light" style="min-height: calc(100vh - 80px);">
             <div class="container-fluid py-4 px-4">
-                
+
                 <div id="resourceDetailsPanel" class="initial-resource-card">
                     {% if error %}
                     <div class="alert alert-danger m-4">{{ error }}</div>
                     {% else %}
                     <div class="initial-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <div class="d-flex align-items-center overflow-hidden">
-                            <div class="bg-primary text-white rounded p-2 me-3 flex-shrink-0"><i class="fas fa-cube"></i></div>
+                            <div class="bg-primary text-white rounded p-2 me-3 flex-shrink-0"><i
+                                    class="fas fa-cube"></i></div>
                             <div class="overflow-hidden">
                                 <h5 class="mb-0 fw-bold text-dark text-truncate">{{ metadata.label }}</h5>
-                                <small class="text-muted font-monospace d-block text-truncate">{{ metadata.uri }}</small>
+                                <small class="text-muted font-monospace d-block text-truncate">{{ metadata.uri
+                                    }}</small>
                             </div>
                         </div>
                         <div class="d-flex gap-2 align-items-center flex-shrink-0">
-                             <span class="badge bg-light text-dark border">{{ metadata.type }}</span>
-                             <a href="{{ url_for('search') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-search me-1"></i>Changer</a>
+                            <span class="badge bg-light text-dark border">{{ metadata.type }}</span>
+                            <a href="{{ url_for('search') }}" class="btn btn-outline-secondary btn-sm"><i
+                                    class="fas fa-search me-1"></i>Changer</a>
                         </div>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive" style="max-height: 900px; overflow-y: auto;">
                             <table class="table table-hover mb-0 align-middle table-sm">
                                 <thead class="bg-light sticky-top">
-                                    <tr><th class="ps-4 py-2 text-secondary small" style="width:30%">PROPRIÉTÉ</th><th class="py-2 text-secondary small">VALEUR</th><th class="text-end pe-4 py-2 text-secondary small" style="width:100px">ACTIONS</th></tr>
+                                    <tr>
+                                        <th class="ps-4 py-2 text-secondary small" style="width:30%">PROPRIÉTÉ</th>
+                                        <th class="py-2 text-secondary small">VALEUR</th>
+                                        <th class="text-end pe-4 py-2 text-secondary small" style="width:100px">ACTIONS
+                                        </th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     {% if df_initial is defined and not df_initial.empty %}
@@ -212,23 +342,26 @@
                                         </td>
                                         <td class="text-dark text-break">
                                             {% if row['Value'] and row['Value'].startswith('http') %}
-                                                <a href="{{ url_for('update_resource', resource_uri=row['Value']) }}" class="text-primary text-decoration-none">{{ row['ValueLabel'] }}</a>
+                                            <a href="{{ url_for('update_resource', resource_uri=row['Value']) }}"
+                                                class="text-primary text-decoration-none">{{ row['ValueLabel'] }}</a>
                                             {% else %}
-                                                {{ row['ValueLabel'] }}
+                                            {{ row['ValueLabel'] }}
                                             {% endif %}
                                         </td>
                                         <td class="text-end pe-4">
-                                            <button class="btn btn-sm btn-link text-secondary p-0 add-direct-filter" 
-                                                    data-uri="{{ row['Property'] }}" 
-                                                    data-label="{{ row['Property'].split('#')[-1].split('/')[-1].replace('_', ' ') }}"
-                                                    data-val="{{ row['ValueLabel'] }}"
-                                                    data-real-val="{{ row['Value'] if row['Value'].startswith('http') else '' }}"
-                                                    title="Ajouter aux filtres">
+                                            <button class="btn btn-sm btn-link text-secondary p-0 add-direct-filter"
+                                                data-uri="{{ row['Property'] }}"
+                                                data-label="{{ row['Property'].split('#')[-1].split('/')[-1].replace('_', ' ') }}"
+                                                data-val="{{ row['ValueLabel'] }}"
+                                                data-real-val="{{ row['Value'] if row['Value'].startswith('http') else '' }}"
+                                                title="Ajouter aux filtres">
                                                 <i class="fas fa-plus-circle"></i>
                                             </button>
-                                            
+
                                             {% if row['Value'] and row['Value'].startswith('http') %}
-                                            <a href="{{ row['Value'] }}" target="_blank" class="btn btn-sm btn-link text-secondary p-0 ms-2" title="Ouvrir le lien">
+                                            <a href="{{ row['Value'] }}" target="_blank"
+                                                class="btn btn-sm btn-link text-secondary p-0 ms-2"
+                                                title="Ouvrir le lien">
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
                                             {% endif %}
@@ -246,21 +379,32 @@
 
                 <div id="resultsPanel" style="display:none;">
                     <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
-                        <div><h4 class="fw-bold mb-0 text-dark">Résultats</h4><p class="text-muted mb-0 small"><span id="resultsCount" class="badge bg-primary rounded-pill me-1">0</span> ressources trouvées</p></div>
+                        <div>
+                            <h4 class="fw-bold mb-0 text-dark">Résultats</h4>
+                            <p class="text-muted mb-0 small"><span id="resultsCount"
+                                    class="badge bg-primary rounded-pill me-1">0</span> ressources trouvées</p>
+                        </div>
                         <div class="d-flex gap-2">
                             <div class="btn-group shadow-sm">
-                                <button type="button" class="btn btn-white bg-white border btn-sm" data-bs-toggle="dropdown"><i class="fas fa-download me-1"></i> Exporter</button>
+                                <button type="button" class="btn btn-white bg-white border btn-sm"
+                                    data-bs-toggle="dropdown"><i class="fas fa-download me-1"></i> Exporter</button>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item export-action" href="#" data-format="csv">CSV</a></li>
                                     <li><a class="dropdown-item export-action" href="#" data-format="json">JSON</a></li>
                                 </ul>
                             </div>
-                            <button id="visualizeBtn" class="btn btn-outline-primary btn-sm fw-bold shadow-sm"><i class="fas fa-chart-pie me-1"></i> Visualiser</button>
-                            <button class="btn btn-white bg-white border btn-sm shadow-sm" id="showSparqlBtn"><i class="fas fa-code me-1"></i> SPARQL</button>
+                            <button id="visualizeBtn" class="btn btn-outline-primary btn-sm fw-bold shadow-sm"><i
+                                    class="fas fa-chart-pie me-1"></i> Visualiser</button>
+                            <button class="btn btn-white bg-white border btn-sm shadow-sm" id="showSparqlBtn"><i
+                                    class="fas fa-code me-1"></i> SPARQL</button>
                         </div>
                     </div>
                     <div id="resultsGrid" class="result-grid"></div>
-                    <div id="loader" class="text-center py-5 d-none"><div class="spinner-border text-primary"></div><p class="mt-2 text-muted small">Recherche en cours...</p></div>
+                    <div id="paginationContainer" class="mt-4 d-flex justify-content-center"></div>
+                    <div id="loader" class="text-center py-5 d-none">
+                        <div class="spinner-border text-primary"></div>
+                        <p class="mt-2 text-muted small">Recherche en cours...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -272,17 +416,26 @@
         <h5 class="offcanvas-title fw-bold text-truncate pe-3" id="offcanvasLabel">Détails</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
-    <div class="offcanvas-body p-0 bg-light"><div id="offcanvasContent"></div></div>
+    <div class="offcanvas-body p-0 bg-light">
+        <div id="offcanvasContent"></div>
+    </div>
     <div class="offcanvas-footer p-3 border-top bg-white text-center shadow-sm">
-        <a href="#" id="fullPageBtn" class="btn btn-primary w-100">Voir la fiche complète <i class="fas fa-arrow-right ms-2"></i></a>
+        <a href="#" id="fullPageBtn" class="btn btn-primary w-100">Voir la fiche complète <i
+                class="fas fa-arrow-right ms-2"></i></a>
     </div>
 </div>
 
 <div class="modal fade" id="sparqlModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-dark text-white"><h5 class="modal-title">Requête SPARQL</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body bg-light"><pre id="sparqlModalCode" class="p-3 mb-0" style="white-space:pre-wrap;font-size:0.85rem;font-family:monospace;color:#333"></pre></div>
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Requête SPARQL</h5><button type="button" class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body bg-light">
+                <pre id="sparqlModalCode" class="p-3 mb-0"
+                    style="white-space:pre-wrap;font-size:0.85rem;font-family:monospace;color:#333"></pre>
+            </div>
         </div>
     </div>
 </div>
@@ -290,172 +443,185 @@
 
 {% block scripts %}
 <script>
-let tagifyInstances = {}, currentFilters = {}, currentResults = [], lastSparqlQuery = "";
+    let tagifyInstances = {}, currentFilters = {}, currentResults = [], lastSparqlQuery = "";
+    let currentPage = 1;
+    const itemsPerPage = 100;
 
-$(document).ready(function() {
-    setupEvents();
-    initPropertySelector();
-});
-
-function escapeHtml(text) {
-    if (text == null) return "";
-    return String(text).replace(/[&<>"']/g, function(m) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]; });
-}
-
-function initPropertySelector() {
-    $('#propertySelector').select2({
-        theme: 'bootstrap-5',
-        width: '100%',
-        placeholder: 'Rechercher une propriété...',
-        allowClear: true,
-        dropdownParent: $('.sidebar-header'),
-        ajax: {
-            url: '/get_properties',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) { return { q: params.term }; },
-            processResults: function (data) { return { results: data.results }; },
-            cache: true
-        }
-    });
-}
-
-function setupEvents() {
-    $('#addFilterBtn').click(() => {
-        const data = $('#propertySelector').select2('data')[0];
-        if(data) { 
-            addFilterRow(data.id, data.text); 
-            $('#propertySelector').val(null).trigger('change'); 
-        }
+    $(document).ready(function () {
+        setupEvents();
+        initPropertySelector();
     });
 
-    $(document).on('click', '.add-nested-filter', function(e) {
-        e.stopPropagation();
-        disposeAllPopovers();
-        
-        const btn = $(this);
-        const popoverId = `popover-select-${Date.now()}`;
-        const content = `
+    function escapeHtml(text) {
+        if (text == null) return "";
+        return String(text).replace(/[&<>"']/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]; });
+    }
+
+    function initPropertySelector() {
+        $('#propertySelector').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            placeholder: 'Rechercher une propriété...',
+            allowClear: true,
+            dropdownParent: $('.sidebar-header'),
+            ajax: {
+                url: '/get_properties',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) { return { q: params.term }; },
+                processResults: function (data) { return { results: data.results }; },
+                cache: true
+            }
+        });
+    }
+
+    function setupEvents() {
+        $('#addFilterBtn').click(() => {
+            const data = $('#propertySelector').select2('data')[0];
+            if (data) {
+                addFilterRow(data.id, data.text);
+                $('#propertySelector').val(null).trigger('change');
+            }
+        });
+
+        $(document).on('click', '.add-nested-filter', function (e) {
+            e.stopPropagation();
+            disposeAllPopovers();
+
+            const btn = $(this);
+            const popoverId = `popover-select-${Date.now()}`;
+            const content = `
             <div class="nested-popover-content">
                 <label class="small fw-bold mb-1">Propriété imbriquée :</label>
                 <select id="${popoverId}" class="form-select form-select-sm" style="width:100%"></select>
                 <button type="button" class="btn btn-sm btn-primary w-100 mt-2 confirm-nested-add">Ajouter</button>
             </div>`;
-            
-        btn.popover({
-            content: content, html: true, sanitize: false, placement: 'bottom', trigger: 'manual', container: 'body'
-        });
-        btn.popover('show');
-        
-        btn.one('shown.bs.popover', function() {
-            const popoverBody = $(`#${btn.attr('aria-describedby')} .popover-body`);
-            const select = popoverBody.find(`#${popoverId}`);
-            
-            select.select2({
-                theme: 'bootstrap-5', width: '100%', placeholder: 'Choisir...', dropdownParent: popoverBody,
-                ajax: {
-                    url: '/get_properties', dataType: 'json', delay: 250,
-                    data: function (params) { return { q: params.term }; },
-                    processResults: function (data) { return { results: data.results }; }
-                }
-            });
-            
-            popoverBody.find('.confirm-nested-add').on('click', function() {
-                const data = select.select2('data')[0];
-                if (data) {
-                    const parentContainer = btn.closest('.filter-item-clean').children('.nested-filter-container').first();
-                    addFilterRow(data.id, data.text, 1, parentContainer);
-                }
-                btn.popover('dispose');
-            });
-        });
-    });
 
-    $(document).on('click', function (e) {
-        if (!$(e.target).hasClass('add-nested-filter') && $(e.target).closest('.popover').length === 0) {
+            btn.popover({
+                content: content, html: true, sanitize: false, placement: 'bottom', trigger: 'manual', container: 'body'
+            });
+            btn.popover('show');
+
+            btn.one('shown.bs.popover', function () {
+                const popoverBody = $(`#${btn.attr('aria-describedby')} .popover-body`);
+                const select = popoverBody.find(`#${popoverId}`);
+
+                select.select2({
+                    theme: 'bootstrap-5', width: '100%', placeholder: 'Choisir...', dropdownParent: popoverBody,
+                    ajax: {
+                        url: '/get_properties', dataType: 'json', delay: 250,
+                        data: function (params) { return { q: params.term }; },
+                        processResults: function (data) { return { results: data.results }; }
+                    }
+                });
+
+                popoverBody.find('.confirm-nested-add').on('click', function () {
+                    const data = select.select2('data')[0];
+                    if (data) {
+                        const parentContainer = btn.closest('.filter-item-clean').children('.nested-filter-container').first();
+                        addFilterRow(data.id, data.text, 1, parentContainer);
+                    }
+                    btn.popover('dispose');
+                });
+            });
+        });
+
+        $(document).on('click', function (e) {
+            if (!$(e.target).hasClass('add-nested-filter') && $(e.target).closest('.popover').length === 0) {
+                disposeAllPopovers();
+            }
+        });
+
+        $(document).on('click', '.add-direct-filter, .btn-add-preview-filter', function (e) {
+            e.preventDefault(); e.stopPropagation();
+            const btn = $(this);
+            let val = btn.attr('data-val') || btn.attr('data-value');
+            let realVal = btn.attr('data-real-val');
+            if (val) {
+                injectFilter(btn.data('uri'), btn.data('label'), val, realVal);
+                const icon = btn.find('i');
+                const originalClass = icon.attr('class');
+                icon.attr('class', 'fas fa-check text-success');
+                setTimeout(() => icon.attr('class', originalClass), 1000);
+            }
+        });
+
+        $(document).on('click', '.remove-filter', function () {
+            const id = $(this).data('id');
+            const uri = $(this).data('uri');
+            if (tagifyInstances[uri]) delete tagifyInstances[uri];
+            $(`#${id}`).find('.filter-item-clean').each(function () {
+                const childUri = $(this).data('property');
+                if (tagifyInstances[childUri]) delete tagifyInstances[childUri];
+            });
+            $(`#${id}`).remove();
+            if ($('#filterContainer').children().length === 0) $('#noFiltersMessage').show();
+        });
+
+        $('#executeQueryBtn').click(executeQuery);
+
+        $('#clearAllFiltersBtn').click((e) => {
+            e.preventDefault();
             disposeAllPopovers();
-        }
-    });
-
-    $(document).on('click', '.add-direct-filter, .btn-add-preview-filter', function(e) {
-        e.preventDefault(); e.stopPropagation();
-        const btn = $(this);
-        let val = btn.attr('data-val') || btn.attr('data-value');
-        let realVal = btn.attr('data-real-val');
-        if (val) {
-            injectFilter(btn.data('uri'), btn.data('label'), val, realVal);
-            const icon = btn.find('i');
-            const originalClass = icon.attr('class');
-            icon.attr('class', 'fas fa-check text-success');
-            setTimeout(() => icon.attr('class', originalClass), 1000);
-        }
-    });
-
-    $(document).on('click', '.remove-filter', function() {
-        const id = $(this).data('id');
-        const uri = $(this).data('uri');
-        if(tagifyInstances[uri]) delete tagifyInstances[uri];
-        $(`#${id}`).find('.filter-item-clean').each(function() {
-            const childUri = $(this).data('property');
-            if(tagifyInstances[childUri]) delete tagifyInstances[childUri];
+            $('#filterContainer').empty(); $('#noFiltersMessage').show(); tagifyInstances = {};
+            // Keep results visible
         });
-        $(`#${id}`).remove();
-        if ($('#filterContainer').children().length === 0) $('#noFiltersMessage').show();
-    });
 
-    $('#executeQueryBtn').click(executeQuery);
-    
-    $('#clearAllFiltersBtn').click(() => {
-        disposeAllPopovers();
-        $('#filterContainer').empty(); $('#noFiltersMessage').show(); tagifyInstances={}; 
-        $('#resultsPanel').hide(); $('#resourceDetailsPanel').fadeIn();
-    });
-
-    $('#visualizeBtn').click(() => {
-        if(!currentResults.length) return alert("Aucun résultat à visualiser.");
-        const btn = $('#visualizeBtn'); const originalText = btn.html();
-        btn.html('<i class="fas fa-spinner fa-spin"></i> Chargement...'); btn.prop('disabled', true);
-        $.ajax({
-            url: '/api/prepare_visualization', type: 'POST', contentType: 'application/json', data: JSON.stringify({ visualization_data: currentResults }),
-            success: function(response) {
-                btn.html(originalText); btn.prop('disabled', false);
-                if (response.success) window.open('/visualize', '_blank'); else alert("Erreur : " + response.message);
-            },
-            error: function(err) { btn.html(originalText); btn.prop('disabled', false); console.error(err); alert("Erreur de communication."); }
+        $('#visualizeBtn').click(() => {
+            if (!currentResults.length) return alert("Aucun résultat à visualiser.");
+            const btn = $('#visualizeBtn'); const originalText = btn.html();
+            btn.html('<i class="fas fa-spinner fa-spin"></i> Chargement...'); btn.prop('disabled', true);
+            $.ajax({
+                url: '/api/prepare_visualization', type: 'POST', contentType: 'application/json', data: JSON.stringify({ visualization_data: currentResults }),
+                success: function (response) {
+                    btn.html(originalText); btn.prop('disabled', false);
+                    if (response.success) window.open('/visualize', '_blank'); else alert("Erreur : " + response.message);
+                },
+                error: function (err) { btn.html(originalText); btn.prop('disabled', false); console.error(err); alert("Erreur de communication."); }
+            });
         });
-    });
-    
-    $('.export-action').click(function(e) { e.preventDefault(); if(!currentResults.length) return alert("Aucun résultat."); exportData($(this).data('format')); });
-    $('#showSparqlBtn').click(() => { if(!lastSparqlQuery) return; $('#sparqlModalCode').text(lastSparqlQuery); new bootstrap.Modal(document.getElementById('sparqlModal')).show(); });
-    $(document).on('click', '.result-card', function(e) { if($(e.target).closest('a, button, .btn, .dropdown-toggle').length) return; openOffcanvas($(this).data('uri'), $(this).find('.card-title').text()); });
-}
 
-function disposeAllPopovers() {
-    $('.add-nested-filter').each(function () {
-        const popover = bootstrap.Popover.getInstance(this);
-        if (popover) popover.dispose();
-    });
-}
+        $('.export-action').click(function (e) { e.preventDefault(); if (!currentResults.length) return alert("Aucun résultat."); exportData($(this).data('format')); });
+        $('#showSparqlBtn').click(() => { if (!lastSparqlQuery) return; $('#sparqlModalCode').text(lastSparqlQuery); new bootstrap.Modal(document.getElementById('sparqlModal')).show(); });
+        $(document).on('click', '.result-card', function (e) { if ($(e.target).closest('a, button, .btn, .dropdown-toggle').length) return; openOffcanvas($(this).data('uri'), $(this).find('.card-title').text()); });
 
-function injectFilter(uri, label, value, realVal) {
-    let row = $(`.filter-item-clean[data-property="${uri}"][data-level="0"]`);
-    if(!row.length) { addFilterRow(uri, label); row = $(`.filter-item-clean[data-property="${uri}"]`); }
-    setTimeout(() => { 
-        if(tagifyInstances[uri]) { 
-            try { 
-                if (realVal && realVal.startsWith('http')) { tagifyInstances[uri].addTags([{value: value, code: realVal}]); } 
-                else { tagifyInstances[uri].addTags([value]); }
-                row[0].scrollIntoView({ behavior: 'smooth', block: 'center' }); 
-            } catch(e) {} 
-        } 
-    }, 300);
-}
+        $(document).on('click', '.page-link', function (e) {
+            e.preventDefault();
+            const page = $(this).data('page');
+            if (page && page !== currentPage) {
+                currentPage = page;
+                renderResults(currentResults);
+                document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
 
-function addFilterRow(uri, label, level=0, parentContainer=null) {
-    const id = 'f-' + Math.random().toString(36).substr(2, 9);
-    const isNested = level > 0;
-    
-    const ops = `
+    function disposeAllPopovers() {
+        $('.add-nested-filter').each(function () {
+            const popover = bootstrap.Popover.getInstance(this);
+            if (popover) popover.dispose();
+        });
+    }
+
+    function injectFilter(uri, label, value, realVal) {
+        let row = $(`.filter-item-clean[data-property="${uri}"][data-level="0"]`);
+        if (!row.length) { addFilterRow(uri, label); row = $(`.filter-item-clean[data-property="${uri}"]`); }
+        setTimeout(() => {
+            if (tagifyInstances[uri]) {
+                try {
+                    if (realVal && realVal.startsWith('http')) { tagifyInstances[uri].addTags([{ value: value, code: realVal }]); }
+                    else { tagifyInstances[uri].addTags([value]); }
+                    row[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } catch (e) { }
+            }
+        }, 300);
+    }
+
+    function addFilterRow(uri, label, level = 0, parentContainer = null) {
+        const id = 'f-' + Math.random().toString(36).substr(2, 9);
+        const isNested = level > 0;
+
+        const ops = `
     <select class="form-select form-select-sm filter-operator">
         <option value="=">=</option>
         <option value="!=">Different (≠)</option>
@@ -465,17 +631,17 @@ function addFilterRow(uri, label, level=0, parentContainer=null) {
         <option value="ne contient pas">Ne contient pas</option>
         <option value="non_null">Existe (Non Null)</option>
     </select>`;
-    
-    const nestedBtn = (!isNested) ? 
-        `<button type="button" class="btn btn-sm btn-outline-info w-100 mt-2 add-nested-filter" data-property="${uri}">
+
+        const nestedBtn = (!isNested) ?
+            `<button type="button" class="btn btn-sm btn-outline-info w-100 mt-2 add-nested-filter" data-property="${uri}">
             <i class="fas fa-level-down-alt me-1"></i> Ajouter un filtre imbriqué
          </button>` : '';
 
-    const html = `
+        const html = `
     <div class="filter-item-clean" data-property="${uri}" data-level="${level}" id="${id}">
         <div class="d-flex justify-content-between mb-2 align-items-center">
             <div class="text-truncate fw-bold small text-dark" title="${label}">
-                ${isNested?'<i class="fas fa-level-up-alt fa-rotate-90 me-1 text-secondary"></i>':''}
+                ${isNested ? '<i class="fas fa-level-up-alt fa-rotate-90 me-1 text-secondary"></i>' : ''}
                 ${label}
             </div>
             <i class="fas fa-times text-secondary small remove-filter" data-id="${id}" data-uri="${uri}" style="cursor:pointer"></i>
@@ -490,159 +656,211 @@ function addFilterRow(uri, label, level=0, parentContainer=null) {
         ${nestedBtn}
     </div>`;
 
-    const c = (isNested && parentContainer) ? parentContainer : $('#filterContainer');
-    isNested ? c.append(html) : c.prepend(html);
-    
-    $('#noFiltersMessage').hide();
-    
-    const input = document.querySelector(`#${id} .tagify-input`);
-    const tagify = new Tagify(input, { 
-        tagTextProp: 'value', enforceWhitelist: false, whitelist: [], 
-        dropdown: {
-            mapValueTo: 'value', searchKeys: ['value'], maxItems: 20, enabled: 1, closeOnSelect: true,
-            item: function(item){ return `<div ${this.getAttributes(item)} class='tagify__dropdown__item'>${item.value}${item.code ? `<br><small class='text-muted'>${item.code}</small>` : ''}</div>` }
-        } 
-    });
-    
-    let controller;
-    tagify.on('input', function(e) {
-        const value = e.detail.value;
-        if(value.length < 1) return;
-        controller && controller.abort(); controller = new AbortController();
-        tagify.loading(true).dropdown.hide();
-        fetch('/get_property_values?property_uri=' + encodeURIComponent(uri) + '&value=' + encodeURIComponent(value), {signal:controller.signal})
-            .then(RES => RES.json())
-            .then(function(newWhitelist){
-                const suggestions = newWhitelist.values.map(v => ({ value: v.value || v.uri, code: v.uri }));
-                tagify.settings.whitelist = suggestions;
-                tagify.loading(false).dropdown.show(value);
-            })
-            .catch(err => { if(err.name !== 'AbortError') tagify.loading(false); });
-    });
+        const c = (isNested && parentContainer) ? parentContainer : $('#filterContainer');
+        isNested ? c.append(html) : c.prepend(html);
 
-    tagifyInstances[uri] = tagify;
-    
-    $(input).closest('.filter-controls').find('.filter-operator').change(function() {
-        const val = $(this).val();
-        const inputDiv = $(input).parent();
-        if(val === 'non_null' || val === 'Existe') inputDiv.hide(); else inputDiv.show();
-        const tags = tagify.getTagElms();
-        if (val === '!=' || val === 'ne contient pas') $(tags).addClass('unwanted-item');
-        else $(tags).removeClass('unwanted-item');
-    });
-}
+        $('#noFiltersMessage').hide();
 
-function buildFilters() {
-    let filters = {};
-    $('#filterContainer > .filter-item-clean').each(function() {
-        const $filter = $(this);
-        const propertyUri = $filter.data('property');
-        const operator = $filter.find('.filter-operator').first().val() || "=";
-        let filterData = { values: [], logic: 'OR', nestedFilters: {} };
-        
-        if (tagifyInstances[propertyUri]) {
-            if (operator === "non_null" || operator === "Existe") {
-                 filterData.values.push(["", "non_null"]);
-            } else {
-                tagifyInstances[propertyUri].value.forEach(t => {
-                    const valToSend = t.code || t.value;
-                    filterData.values.push([valToSend, operator]);
-                });
-            }
-        }
-        
-        $filter.find('.nested-filter-container > .filter-item-clean').each(function() {
-            const $nested = $(this);
-            const nestedUri = $nested.data('property');
-            const nestedOp = $nested.find('.filter-operator').val() || "=";
-            
-            if (tagifyInstances[nestedUri]) {
-                let nestedData = { values: [] };
-                if (nestedOp === "non_null" || nestedOp === "Existe") {
-                    nestedData.values.push(["", "non_null"]);
-                } else {
-                    tagifyInstances[nestedUri].value.forEach(t => {
-                        const valToSend = t.code || t.value;
-                        nestedData.values.push([valToSend, nestedOp]);
-                    });
-                }
-                if (nestedData.values.length > 0) {
-                    filterData.nestedFilters[nestedUri] = nestedData;
-                }
+        const input = document.querySelector(`#${id} .tagify-input`);
+        const tagify = new Tagify(input, {
+            tagTextProp: 'value', enforceWhitelist: false, whitelist: [],
+            dropdown: {
+                mapValueTo: 'value', searchKeys: ['value'], maxItems: 20, enabled: 1, closeOnSelect: true,
+                item: function (item) { return `<div ${this.getAttributes(item)} class='tagify__dropdown__item'>${item.value}${item.code ? `<br><small class='text-muted'>${item.code}</small>` : ''}</div>` }
             }
         });
-        
-        if(filterData.values.length > 0 || Object.keys(filterData.nestedFilters).length > 0) {
-            filters[propertyUri] = filterData;
-        }
-    });
-    return filters;
-}
 
-function executeQuery() {
-    currentFilters = buildFilters();
-    const logic = $('input[name="filterLogic"]:checked').val();
+        let controller;
+        tagify.on('input', function (e) {
+            const value = e.detail.value;
+            if (value.length < 1) return;
+            controller && controller.abort(); controller = new AbortController();
+            tagify.loading(true).dropdown.hide();
+            fetch('/get_property_values?property_uri=' + encodeURIComponent(uri) + '&value=' + encodeURIComponent(value), { signal: controller.signal })
+                .then(RES => RES.json())
+                .then(function (newWhitelist) {
+                    const suggestions = newWhitelist.values.map(v => ({ value: v.value || v.uri, code: v.uri }));
+                    tagify.settings.whitelist = suggestions;
+                    tagify.loading(false).dropdown.show(value);
+                })
+                .catch(err => { if (err.name !== 'AbortError') tagify.loading(false); });
+        });
 
-    $('#resourceDetailsPanel').slideUp();
-    $('#resultsPanel').show(); $('#resultsGrid').empty(); $('#loader').removeClass('d-none');
-    document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
-    
-    $.ajax({
-        url: '/execute_query', type: 'POST', contentType: 'application/json', 
-        data: JSON.stringify({ filters: currentFilters, logic: logic }),
-        success: function(res) {
-            $('#loader').addClass('d-none');
-            if(res.success) { currentResults=res.results; lastSparqlQuery=res.query; $('#resultsCount').text(res.count); renderResults(res.results); }
-            else $('#resultsGrid').html(`<div class="col-12 alert alert-danger">${res.message}</div>`);
-        },
-        error: function() { $('#loader').addClass('d-none'); $('#resultsGrid').html(`<div class="col-12 alert alert-danger">Erreur serveur</div>`); }
-    });
-}
+        tagifyInstances[uri] = tagify;
 
-function renderResults(res) {
-    if(!res.length) { $('#resultsGrid').html('<div class="col-12 text-center py-5 text-muted">Aucun résultat trouvé</div>'); return; }
-    $('#resultsGrid').html(res.map(r => {
-        let icon = 'fa-cube';
-        if(r.SubjectURI.toLowerCase().includes('person')) icon='fa-user';
-        if(r.SubjectURI.toLowerCase().includes('livre') || r.SubjectURI.includes('ouvrage')) icon='fa-book';
-        return `<div class="result-card shadow-sm" data-uri="${r.SubjectURI}"><div class="d-flex align-items-start flex-grow-1"><div class="card-icon"><i class="fas ${icon}"></i></div><div class="overflow-hidden w-100"><h6 class="card-title fw-bold mb-1 text-dark" title="${escapeHtml(r.SubjectLabel)}">${r.SubjectLabel||"Sans titre"}</h6><small class="text-muted d-block font-monospace text-truncate" style="font-size:0.75rem">${r.SubjectURI}</small></div></div><div class="pt-3 mt-auto text-end border-top"><span class="small text-primary fw-bold">Voir détails <i class="fas fa-chevron-right ms-1"></i></span></div></div>`;
-    }).join(''));
-}
+        $(input).closest('.filter-controls').find('.filter-operator').change(function () {
+            const val = $(this).val();
+            const inputDiv = $(input).parent();
+            if (val === 'non_null' || val === 'Existe') inputDiv.hide(); else inputDiv.show();
+            const tags = tagify.getTagElms();
+            if (val === '!=' || val === 'ne contient pas') $(tags).addClass('unwanted-item');
+            else $(tags).removeClass('unwanted-item');
+        });
+    }
 
-function openOffcanvas(uri, title) {
-    $('#offcanvasLabel').text(title); 
-    $('#fullPageBtn').attr('href', `/update_resource/${encodeURIComponent(uri)}`);
-    $('#offcanvasContent').html('<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>');
-    new bootstrap.Offcanvas(document.getElementById('resourceOffcanvas')).show();
-    
-    $.getJSON('/api/resource_details', { uri: uri }, function(d) {
-        if(d && d.details) {
-            let grouped = {};
-            d.details.forEach(x => {
-                if(x.Property.endsWith('#type')) return;
-                const propLabel = x.PropertyLabel || (x.Property.includes(':') && !x.Property.startsWith('http') ? x.Property : x.Property.split(/[#/]/).pop());
-                if(!grouped[x.Property]) grouped[x.Property] = { label: propLabel, values: [] };
-                grouped[x.Property].values.push({ val: x.Value, label: x.ValueLabel, isLink: x.Value.startsWith('http') });
-            });
-            let html = '<div class="list-group list-group-flush">';
-            for (const [propUri, data] of Object.entries(grouped)) {
-                let valuesHtml = data.values.map(v => {
-                    const displayVal = v.isLink ? `<a href="/update_resource/${encodeURIComponent(v.val)}" class="text-decoration-none">${v.label}</a>` : v.label;
-                    const extLink = v.isLink ? `<a href="${v.val}" target="_blank" class="btn btn-light border btn-sm btn-add-filter-xs text-secondary" title="Ouvrir le lien"><i class="fas fa-external-link-alt"></i></a>` : '';
-                    const realVal = v.isLink ? v.val : '';
-                    return `<div class="detail-value-item"><span class="text-dark small text-break">${displayVal}</span><div class="d-flex align-items-center"><button class="btn btn-light border btn-sm btn-add-preview-filter btn-add-filter-xs" title="Filtrer" data-uri="${propUri}" data-label="${data.label}" data-val="${escapeHtml(v.label)}" data-real-val="${realVal}"><i class="fas fa-plus"></i></button>${extLink}</div></div>`;
-                }).join('');
-                html += `<div class="detail-row bg-white"><div class="d-flex w-100"><div class="detail-label text-truncate" title="${propUri}">${data.label}</div><div class="detail-values">${valuesHtml}</div></div></div>`;
+    function buildFilters() {
+        let filters = {};
+        $('#filterContainer > .filter-item-clean').each(function () {
+            const $filter = $(this);
+            const propertyUri = $filter.data('property');
+            const operator = $filter.find('.filter-operator').first().val() || "=";
+            let filterData = { values: [], logic: 'OR', nestedFilters: {} };
+
+            if (tagifyInstances[propertyUri]) {
+                if (operator === "non_null" || operator === "Existe") {
+                    filterData.values.push(["", "non_null"]);
+                } else {
+                    tagifyInstances[propertyUri].value.forEach(t => {
+                        const valToSend = t.code || t.value;
+                        filterData.values.push([valToSend, operator]);
+                    });
+                }
             }
-            html += '</div>';
-            $('#offcanvasContent').html(html);
-        } else { $('#offcanvasContent').html('<div class="alert alert-warning m-3">Erreur chargement détails</div>'); }
-    });
-}
 
-function exportData(format) {
-    fetch(`/export/${format}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({results:currentResults}) })
-    .then(r=>r.blob()).then(b=>{ const l=document.createElement('a'); l.href=window.URL.createObjectURL(b); l.download=`export.${format}`; l.click(); });
-}
+            $filter.find('.nested-filter-container > .filter-item-clean').each(function () {
+                const $nested = $(this);
+                const nestedUri = $nested.data('property');
+                const nestedOp = $nested.find('.filter-operator').val() || "=";
+
+                if (tagifyInstances[nestedUri]) {
+                    let nestedData = { values: [] };
+                    if (nestedOp === "non_null" || nestedOp === "Existe") {
+                        nestedData.values.push(["", "non_null"]);
+                    } else {
+                        tagifyInstances[nestedUri].value.forEach(t => {
+                            const valToSend = t.code || t.value;
+                            nestedData.values.push([valToSend, nestedOp]);
+                        });
+                    }
+                    if (nestedData.values.length > 0) {
+                        filterData.nestedFilters[nestedUri] = nestedData;
+                    }
+                }
+            });
+
+            if (filterData.values.length > 0 || Object.keys(filterData.nestedFilters).length > 0) {
+                filters[propertyUri] = filterData;
+            }
+        });
+        return filters;
+    }
+
+    function executeQuery() {
+        currentFilters = buildFilters();
+        const logic = $('input[name="filterLogic"]:checked').val();
+
+        $('#resourceDetailsPanel').slideUp();
+        $('#resultsPanel').show(); $('#resultsGrid').empty(); $('#loader').removeClass('d-none');
+        document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
+
+        $.ajax({
+            url: '/execute_query', type: 'POST', contentType: 'application/json',
+            data: JSON.stringify({ filters: currentFilters, logic: logic }),
+            success: function (res) {
+                $('#loader').addClass('d-none');
+                if (res.success) {
+                    currentResults = res.results;
+                    lastSparqlQuery = res.query;
+                    $('#resultsCount').text(res.count);
+                    currentPage = 1;
+                    renderResults(res.results);
+                }
+                else $('#resultsGrid').html(`<div class="col-12 alert alert-danger">${res.message}</div>`);
+            },
+            error: function () { $('#loader').addClass('d-none'); $('#resultsGrid').html(`<div class="col-12 alert alert-danger">Erreur serveur</div>`); }
+        });
+    }
+
+    function renderResults(res) {
+        if (!res.length) {
+            $('#resultsGrid').html('<div class="col-12 text-center py-5 text-muted">Aucun résultat trouvé</div>');
+            $('#paginationContainer').empty();
+            return;
+        }
+
+        const totalPages = Math.ceil(res.length / itemsPerPage);
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageResults = res.slice(start, end);
+
+        $('#resultsGrid').html(pageResults.map(r => {
+            let icon = 'fa-cube';
+            if (r.SubjectURI.toLowerCase().includes('person')) icon = 'fa-user';
+            if (r.SubjectURI.toLowerCase().includes('livre') || r.SubjectURI.includes('ouvrage')) icon = 'fa-book';
+            return `<div class="result-card shadow-sm" data-uri="${r.SubjectURI}"><div class="d-flex align-items-start flex-grow-1"><div class="card-icon"><i class="fas ${icon}"></i></div><div class="overflow-hidden w-100"><h6 class="card-title fw-bold mb-1 text-dark" title="${escapeHtml(r.SubjectLabel)}">${r.SubjectLabel || "Sans titre"}</h6><small class="text-muted d-block font-monospace text-truncate" style="font-size:0.75rem">${r.SubjectURI}</small></div></div><div class="pt-3 mt-auto text-end border-top"><span class="small text-primary fw-bold">Voir détails <i class="fas fa-chevron-right ms-1"></i></span></div></div>`;
+        }).join(''));
+
+        renderPaginationControls(totalPages);
+    }
+
+    function renderPaginationControls(totalPages) {
+        if (totalPages <= 1) {
+            $('#paginationContainer').empty();
+            return;
+        }
+
+        let html = '<nav><ul class="pagination">';
+
+        // Previous
+        html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${currentPage - 1}">Précédent</a>
+                 </li>`;
+
+        // Pages
+        for (let i = 1; i <= totalPages; i++) {
+            // Show first, last, current, and neighbors
+            if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                            <a class="page-link" href="#" data-page="${i}">${i}</a>
+                         </li>`;
+            } else if (i === currentPage - 3 || i === currentPage + 3) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+
+        // Next
+        html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${currentPage + 1}">Suivant</a>
+                 </li>`;
+
+        html += '</ul></nav>';
+        $('#paginationContainer').html(html);
+    }
+
+    function openOffcanvas(uri, title) {
+        $('#offcanvasLabel').text(title);
+        $('#fullPageBtn').attr('href', `/update_resource/${encodeURIComponent(uri)}`);
+        $('#offcanvasContent').html('<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>');
+        new bootstrap.Offcanvas(document.getElementById('resourceOffcanvas')).show();
+
+        $.getJSON('/api/resource_details', { uri: uri }, function (d) {
+            if (d && d.details) {
+                let grouped = {};
+                d.details.forEach(x => {
+                    if (x.Property.endsWith('#type')) return;
+                    const propLabel = x.PropertyLabel || (x.Property.includes(':') && !x.Property.startsWith('http') ? x.Property : x.Property.split(/[#/]/).pop());
+                    if (!grouped[x.Property]) grouped[x.Property] = { label: propLabel, values: [] };
+                    grouped[x.Property].values.push({ val: x.Value, label: x.ValueLabel, isLink: x.Value.startsWith('http') });
+                });
+                let html = '<div class="list-group list-group-flush">';
+                for (const [propUri, data] of Object.entries(grouped)) {
+                    let valuesHtml = data.values.map(v => {
+                        const displayVal = v.isLink ? `<a href="/update_resource/${encodeURIComponent(v.val)}" class="text-decoration-none">${v.label}</a>` : v.label;
+                        const extLink = v.isLink ? `<a href="${v.val}" target="_blank" class="btn btn-light border btn-sm btn-add-filter-xs text-secondary" title="Ouvrir le lien"><i class="fas fa-external-link-alt"></i></a>` : '';
+                        const realVal = v.isLink ? v.val : '';
+                        return `<div class="detail-value-item"><span class="text-dark small text-break">${displayVal}</span><div class="d-flex align-items-center"><button class="btn btn-light border btn-sm btn-add-preview-filter btn-add-filter-xs" title="Filtrer" data-uri="${propUri}" data-label="${data.label}" data-val="${escapeHtml(v.label)}" data-real-val="${realVal}"><i class="fas fa-plus"></i></button>${extLink}</div></div>`;
+                    }).join('');
+                    html += `<div class="detail-row bg-white"><div class="d-flex w-100"><div class="detail-label text-truncate" title="${propUri}">${data.label}</div><div class="detail-values">${valuesHtml}</div></div></div>`;
+                }
+                html += '</div>';
+                $('#offcanvasContent').html(html);
+            } else { $('#offcanvasContent').html('<div class="alert alert-warning m-3">Erreur chargement détails</div>'); }
+        });
+    }
+
+    function exportData(format) {
+        fetch(`/export/${format}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ results: currentResults }) })
+            .then(r => r.blob()).then(b => { const l = document.createElement('a'); l.href = window.URL.createObjectURL(b); l.download = `export.${format}`; l.click(); });
+    }
 </script>
 {% endblock %}

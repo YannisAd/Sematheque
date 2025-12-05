@@ -11,7 +11,7 @@
         margin-top: 20px;
         width: 100%;
     }
-    
+
     .graph-container {
         flex: 4;
         height: 100%;
@@ -21,7 +21,7 @@
         position: relative;
         background: #fff;
     }
-    
+
     .sidebar {
         flex: 1.5;
         min-width: 25%;
@@ -33,7 +33,7 @@
         overflow-y: auto;
         background: #f8f9fa;
     }
-        
+
     .controls {
         position: absolute;
         top: 10px;
@@ -42,10 +42,10 @@
         background: rgba(255, 255, 255, 0.95);
         padding: 15px;
         border-radius: 8px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
         max-width: 280px;
     }
-    
+
     .legend {
         position: absolute;
         bottom: 20px;
@@ -54,57 +54,79 @@
         background: rgba(255, 255, 255, 0.95);
         padding: 15px;
         border-radius: 8px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
         max-width: 250px;
     }
-    
+
     .legend-item {
         display: flex;
         align-items: center;
         margin-bottom: 10px;
     }
-    
+
     .legend-color {
         width: 20px;
         height: 20px;
         margin-right: 8px;
         border-radius: 3px;
     }
-    
+
     .legend-line {
         width: 30px;
         height: 3px;
         margin-right: 8px;
     }
-        
-    .node { cursor: pointer; }
-    .node circle { fill: #fff; stroke: steelblue; stroke-width: 3px; }
-    .node text { font: 12px sans-serif; pointer-events: none; }
-    
-    .link { fill: none; stroke: #ccc; stroke-width: 2px; }
-    
+
+    .node {
+        cursor: pointer;
+    }
+
+    .node circle {
+        fill: #fff;
+        stroke: steelblue;
+        stroke-width: 3px;
+    }
+
+    .node text {
+        font: 12px sans-serif;
+        pointer-events: none;
+    }
+
+    .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 2px;
+    }
+
     .tooltip {
         position: absolute;
         background: white;
         border: 1px solid #ddd;
         border-radius: 5px;
         padding: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         pointer-events: none;
         opacity: 0;
         transition: opacity 0.3s;
         z-index: 1000;
     }
-    
-    .resource-link { color: #0d6efd; cursor: pointer; text-decoration: none; }
-    .resource-link:hover { text-decoration: underline; }
-    
+
+    .resource-link {
+        color: #0d6efd;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .resource-link:hover {
+        text-decoration: underline;
+    }
+
     .sidebar-title {
         margin-top: 0;
         padding-bottom: 10px;
         border-bottom: 1px solid #ddd;
     }
-    
+
     .loading {
         display: flex;
         justify-content: center;
@@ -112,26 +134,36 @@
         height: 100%;
         width: 100%;
         position: absolute;
-        top: 0; left: 0;
-        background-color: rgba(255,255,255,0.8);
+        top: 0;
+        left: 0;
+        background-color: rgba(255, 255, 255, 0.8);
         z-index: 1000;
     }
-    
+
     .loader {
         border: 5px solid #f3f3f3;
         border-top: 5px solid #3498db;
         border-radius: 50%;
-        width: 50px; height: 50px;
+        width: 50px;
+        height: 50px;
         animation: spin 1s linear infinite;
     }
-    
+
     @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
     }
-    
-    .search-container { margin-bottom: 15px; position: relative; }
-    
+
+    .search-container {
+        margin-bottom: 15px;
+        position: relative;
+    }
+
     .search-results {
         max-height: 200px;
         overflow-y: auto;
@@ -142,16 +174,18 @@
         z-index: 1100;
         position: absolute;
         width: 100%;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    
+
     .highlighted-node path {
         stroke-width: 5px !important;
-        filter: drop-shadow(0 0 5px rgba(0,0,0,0.3));
+        filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
     }
-    
-    .highlighted-text { font-weight: bold !important; }
-    
+
+    .highlighted-text {
+        font-weight: bold !important;
+    }
+
     .view-controls {
         margin-top: 15px;
         border-top: 1px solid #ddd;
@@ -161,16 +195,18 @@
 
 <div class="container-fluid mt-3">
     <p class="lead">Explorez la structure de l'ontologie et les instances associées</p>
-    
+
     <div class="ontology-container">
         <div class="graph-container" id="graph">
             <div class="controls">
                 <div class="btn-group w-100 mb-2">
-                    <button id="zoomIn" class="btn btn-sm btn-outline-primary"><i class="fas fa-search-plus"></i></button>
-                    <button id="zoomOut" class="btn btn-sm btn-outline-primary"><i class="fas fa-search-minus"></i></button>
+                    <button id="zoomIn" class="btn btn-sm btn-outline-primary"><i
+                            class="fas fa-search-plus"></i></button>
+                    <button id="zoomOut" class="btn btn-sm btn-outline-primary"><i
+                            class="fas fa-search-minus"></i></button>
                     <button id="resetView" class="btn btn-sm btn-outline-secondary"><i class="fas fa-redo"></i></button>
                 </div>
-                
+
                 <div class="view-controls text-center">
                     <button id="showSimplifiedView" class="btn btn-sm btn-outline-success w-100" style="display: none;">
                         <i class="fas fa-eye-slash me-1"></i> Vue simplifiée
@@ -179,20 +215,21 @@
                         <i class="fas fa-eye me-1"></i> Afficher tout
                     </button>
                 </div>
-                
+
                 <div class="search-container mt-3">
-                    <input type="text" id="searchInput" placeholder="Rechercher une classe..." class="form-control form-control-sm">
+                    <input type="text" id="searchInput" placeholder="Rechercher une classe..."
+                        class="form-control form-control-sm">
                     <div id="searchResults" class="search-results"></div>
                 </div>
             </div>
-            
+
             <div class="legend" id="graphLegend"></div>
-            
+
             <div id="loading" class="loading">
                 <div class="loader"></div>
             </div>
         </div>
-        
+
         <div class="sidebar" id="sidebar">
             <h5 class="sidebar-title">Détails</h5>
             <div id="detailsContent">
@@ -205,8 +242,8 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 
 <script>
-    const ontologyData = {{ ontology_data|safe }};
-    
+    const ontologyData = {{ ontology_data| safe }};
+
     let svg, g, zoom;
     let width, height;
     let simulation;
@@ -216,7 +253,7 @@
     let importantClasses = new Set();
     let importantProperties = new Set();
     let simplifiedViewActive = true;
-    
+
     const filters = {
         classes: true,
         properties: true,
@@ -224,42 +261,42 @@
         domainLinks: true,
         rangeLinks: true
     };
-    
+
     /** Initialise la visualisation D3.js, le zoom et les écouteurs. */
     function initGraph() {
         const container = document.getElementById('graph');
         width = container.clientWidth;
         height = container.clientHeight;
-        
+
         zoom = d3.zoom()
             .scaleExtent([0.1, 4])
             .on("zoom", (event) => g.attr("transform", event.transform));
-        
+
         svg = d3.select("#graph").append("svg")
             .attr("width", width)
             .attr("height", height)
             .call(zoom);
-        
+
         g = svg.append("g");
-        
+
         tooltip = d3.select("#graph").append("div")
             .attr("class", "tooltip");
-        
+
         document.getElementById("zoomIn").addEventListener("click", () => svg.transition().call(zoom.scaleBy, 1.3));
         document.getElementById("zoomOut").addEventListener("click", () => svg.transition().call(zoom.scaleBy, 0.7));
-        document.getElementById("resetView").addEventListener("click", () => svg.transition().call(zoom.transform, d3.zoomIdentity.scale(0.5).translate(width/4, height/4)));
-        
+        document.getElementById("resetView").addEventListener("click", () => svg.transition().call(zoom.transform, d3.zoomIdentity.scale(0.5).translate(width / 4, height / 4)));
+
         document.getElementById("showAllElements").addEventListener("click", showAllElements);
         document.getElementById("showSimplifiedView").addEventListener("click", showSimplifiedView);
         document.getElementById("searchInput").addEventListener("input", handleSearch);
-        
+
         if (!ontologyData.classes || ontologyData.classes.length === 0) {
             loadOntologyFromAPI();
         } else {
             buildGraph(ontologyData);
         }
     }
-    
+
     /** Récupère les données de structure via l'API si elles ne sont pas préchargées. */
     function loadOntologyFromAPI() {
         fetch('/api/ontology/structure')
@@ -273,7 +310,7 @@
             })
             .catch(error => showError("Erreur chargement: " + error.message));
     }
-    
+
     /** Affiche un message d'erreur dans le conteneur SVG. */
     function showError(message) {
         document.getElementById("loading").style.display = "none";
@@ -284,7 +321,7 @@
             .attr("fill", "red")
             .text(message);
     }
-    
+
     /** Construit les nœuds, liens et la simulation physique D3. */
     function buildGraph(data) {
         if (!data.classes || data.classes.length === 0) {
@@ -294,13 +331,13 @@
 
         importantClasses.clear();
         importantProperties.clear();
-        
+
         data.classes.forEach(c => {
             if ((c.superClasses && c.superClasses.length > 0) || (c.properties && c.properties.length > 0)) {
                 importantClasses.add(c.uri);
             }
         });
-        
+
         if (data.relations) {
             data.relations.forEach(r => {
                 if (r.domains && r.domains.length > 0 && r.ranges && r.ranges.length > 0) {
@@ -325,7 +362,7 @@
                     const hasDomains = r.domains && r.domains.length > 0;
                     const hasRanges = r.ranges && r.ranges.length > 0;
                     let color = "#9E9E9E";
-                    
+
                     if (hasDomains && hasRanges) color = "#FF9800";
                     else if (hasDomains) color = "#E91E63";
                     else if (hasRanges) color = "#2196F3";
@@ -398,7 +435,7 @@
             .on("mouseout", hideTooltip);
 
         node.append("path")
-            .attr("d", d => d.type === 'property' ? hexagonPath(20) : d3.arc()({ innerRadius: 0, outerRadius: 20, startAngle: 0, endAngle: 2*Math.PI }))
+            .attr("d", d => d.type === 'property' ? hexagonPath(20) : d3.arc()({ innerRadius: 0, outerRadius: 20, startAngle: 0, endAngle: 2 * Math.PI }))
             .attr("fill", d => d.type === 'class' ? "#e8f5e9" : "#fff")
             .attr("stroke", d => d.color)
             .attr("stroke-width", d => d.type === 'class' ? 3 : 2);
@@ -413,7 +450,7 @@
             path.attr("d", d => {
                 const dx = d.target.x - d.source.x, dy = d.target.y - d.source.y;
                 const dr = Math.sqrt(dx * dx + dy * dy);
-                const offX = dx * 20 / dr, offY = dy * 20 / dr; 
+                const offX = dx * 20 / dr, offY = dy * 20 / dr;
                 return `M${d.source.x},${d.source.y}L${d.target.x - offX},${d.target.y - offY}`;
             });
             node.attr("transform", d => `translate(${d.x},${d.y})`);
@@ -422,7 +459,7 @@
         createLegend();
         document.getElementById("loading").style.display = "none";
         showSimplifiedView();
-        setTimeout(() => svg.call(zoom.transform, d3.zoomIdentity.scale(0.6).translate(width/3, height/3)), 100);
+        setTimeout(() => svg.call(zoom.transform, d3.zoomIdentity.scale(0.6).translate(width / 3, height / 3)), 100);
     }
 
     /** Génère la légende explicative du graphe. */
@@ -435,7 +472,7 @@
             { color: "#E91E63", label: "Propriété Donnée", type: "hex" },
             { color: "#555", label: "Sous-classe", type: "line" }
         ];
-        
+
         items.forEach(item => {
             const div = legend.append("div").attr("class", "legend-item");
             if (item.type === "rect") div.append("div").attr("class", "legend-color").style("background", item.color);
@@ -459,7 +496,7 @@
     function showDetails(event, d) {
         currentFocus = d;
         d3.selectAll(".node path").attr("stroke-width", n => n.id === d.id ? 5 : (n.type === 'class' ? 3 : 2));
-        
+
         if (d.type === 'class') showClassDetails(d);
         else if (d.type === 'property') showPropertyDetails(d.id);
     }
@@ -488,7 +525,7 @@
             });
             html += `</ul>`;
         }
-        
+
         container.innerHTML = html;
     }
 
@@ -496,14 +533,14 @@
     function showPropertyDetails(uri) {
         const node = nodes.find(n => n.id === uri);
         if (!node) return;
-        
+
         const container = document.getElementById('detailsContent');
         let html = `
             <div class="card mb-3 border-warning">
                 <div class="card-header bg-warning text-dark">${node.label}</div>
                 <div class="card-body py-2"><small class="text-muted text-break">${node.id}</small></div>
             </div>`;
-            
+
         if (node.domains && node.domains.length) {
             html += `<h6>Domaines</h6><ul class="list-group list-group-flush small">`;
             node.domains.forEach(d => html += `<li class="list-group-item px-0"><a href="#" class="resource-link" onclick="navigateToClass('${d.uri}')">${d.label}</a></li>`);
@@ -521,7 +558,7 @@
     function loadInstanceDetails(uri) {
         const container = document.getElementById('detailsContent');
         container.innerHTML = `<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>`;
-        
+
         fetch(`/api/resource_details?uri=${encodeURIComponent(uri)}`)
             .then(res => res.json())
             .then(data => {
@@ -538,7 +575,7 @@
     function showInstanceDetailsGeneric(details, uri) {
         const labelRow = details.find(d => d.Property === 'http://www.w3.org/2000/01/rdf-schema#label');
         const typeRow = details.find(d => d.Property === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-        
+
         const label = labelRow ? labelRow.Value : 'Instance';
         const typeLabel = typeRow ? (typeRow.ValueLabel || typeRow.Value) : 'Inconnu';
 
@@ -556,9 +593,9 @@
 
         const grouped = {};
         details.forEach(row => {
-            if (row.Property === 'http://www.w3.org/2000/01/rdf-schema#label' || 
+            if (row.Property === 'http://www.w3.org/2000/01/rdf-schema#label' ||
                 row.Property === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') return;
-                
+
             if (!grouped[row.PropertyLabel]) grouped[row.PropertyLabel] = [];
             grouped[row.PropertyLabel].push(row);
         });
@@ -576,7 +613,7 @@
             });
             html += `</li>`;
         }
-        
+
         html += `</ul>`;
         document.getElementById('detailsContent').innerHTML = html;
     }
@@ -586,7 +623,7 @@
         const node = nodes.find(n => n.id === uri);
         if (node) {
             if (simplifiedViewActive && !node.isImportant) showAllElements();
-            const transform = d3.zoomIdentity.translate(width/2, height/2).scale(1).translate(-node.x, -node.y);
+            const transform = d3.zoomIdentity.translate(width / 2, height / 2).scale(1).translate(-node.x, -node.y);
             svg.transition().duration(750).call(zoom.transform, transform);
             showDetails(null, node);
         } else {
@@ -599,10 +636,10 @@
         const q = this.value.toLowerCase();
         const resBox = document.getElementById('searchResults');
         if (q.length < 2) { resBox.style.display = 'none'; return; }
-        
+
         const matches = nodes.filter(n => n.label.toLowerCase().includes(q)).slice(0, 10);
         if (matches.length > 0) {
-            resBox.innerHTML = matches.map(n => 
+            resBox.innerHTML = matches.map(n =>
                 `<div class="p-2 border-bottom" style="cursor:pointer" onclick="navigateToClass('${n.id}'); document.getElementById('searchResults').style.display='none'">
                     <i class="fas ${n.type === 'class' ? 'fa-cube text-success' : 'fa-link text-warning'} me-2"></i>${n.label}
                 </div>`
